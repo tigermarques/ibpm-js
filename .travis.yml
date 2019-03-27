@@ -1,0 +1,16 @@
+sudo: false
+language: node_js
+cache:
+  directories:
+    - node_modules
+node_js: 10
+branches:
+  only:
+    - master
+    - develop
+before_install:
+  - npm prune
+script:
+  - npm install
+after_success:
+  - npm run semantic-release
