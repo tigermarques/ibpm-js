@@ -1,16 +1,15 @@
 {
   "name": "ibpm-js",
   "version": "0.0.0-semantically-released",
-  "description": "Library for handling with IBM BPM API",
-  "main": "dist/index.js",
+  "description": "Library for handling IBM BPM API",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "nyc mocha --opts ./mocha.opts \"src/**/*.test.js\"",
-    "build": "babel src --out-dir dist --ignore '**/*.test.js'",
+    "test": "nyc mocha --opts ./mocha.opts \"test/**/*.test.js\"",
     "semantic-release": "semantic-release",
     "commit": "git-cz"
   },
   "files": [
-    "dist"
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -28,11 +27,6 @@
   },
   "homepage": "https://github.com/tigermarques/ibpm-js#readme",
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.4.0",
-    "@babel/preset-env": "^7.4.2",
-    "@babel/register": "^7.4.0",
-    "babel-eslint": "^10.0.1",
     "chai": "^4.2.0",
     "commitizen": "^3.0.7",
     "cz-conventional-changelog": "^2.1.0",

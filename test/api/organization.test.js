@@ -1,5 +1,7 @@
-import { expect } from 'chai'
-import * as organization from './organization'
+const chai = require('chai')
+const organization = require('../../lib/api/organization')
+
+const expect = chai.expect
 
 describe('Groups', () => {
   it('should return status 200', () => {
