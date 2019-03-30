@@ -5,9 +5,6 @@
 		"text-summary"
 	],
 	"report-dir": "./coverage",
-	"exclude": [
-		"src/**/*.test.js"
-	],
 	"check-coverage": true,
 	"lines": 0,
 	"statements": 0,
