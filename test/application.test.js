@@ -16,7 +16,7 @@ describe('Application', () => {
     expect(myApp.context).to.equal('')
     expect(myApp.username).to.equal('bpmadmin')
     expect(myApp.password).to.equal('bpmadmin')
-    expect(myApp.restUrl).to.equal('https://:9443/rest/bpm/wle/v1/')
+    expect(myApp.restUrl).to.equal('https://:9443/rest/bpm/wle/v1')
   })
 
   it('should set environment values when no config is provided but environment variables exist', () => {
@@ -33,7 +33,7 @@ describe('Application', () => {
     expect(myApp.context).to.equal('myContext/')
     expect(myApp.username).to.equal('myUser')
     expect(myApp.password).to.equal('myPass')
-    expect(myApp.restUrl).to.equal('http://myHostname:9444/myContext/rest/bpm/wle/v1/')
+    expect(myApp.restUrl).to.equal('http://myHostname:9444/myContext/rest/bpm/wle/v1')
     delete process.env.IBM_BPM_PROTOCOL
     delete process.env.IBM_BPM_HOSTNAME
     delete process.env.IBM_BPM_PORT
@@ -57,7 +57,7 @@ describe('Application', () => {
     expect(myApp.context).to.equal('dev/')
     expect(myApp.username).to.equal('user')
     expect(myApp.password).to.equal('pass')
-    expect(myApp.restUrl).to.equal('http://domain:9445/dev/rest/bpm/wle/v1/')
+    expect(myApp.restUrl).to.equal('http://domain:9445/dev/rest/bpm/wle/v1')
   })
 
   it('should use config values passed even when environment variables exist', () => {
@@ -81,7 +81,7 @@ describe('Application', () => {
     expect(myApp.context).to.equal('dev/')
     expect(myApp.username).to.equal('user')
     expect(myApp.password).to.equal('pass')
-    expect(myApp.restUrl).to.equal('https://domain:9445/dev/rest/bpm/wle/v1/')
+    expect(myApp.restUrl).to.equal('https://domain:9445/dev/rest/bpm/wle/v1')
     delete process.env.IBM_BPM_PROTOCOL
     delete process.env.IBM_BPM_HOSTNAME
     delete process.env.IBM_BPM_PORT

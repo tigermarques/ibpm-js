@@ -4,6 +4,10 @@
 		"json",
 		"text-summary"
 	],
+  "all": true,
+  "include": [
+    "lib/**/*.js"
+  ],
 	"report-dir": "./coverage",
 	"check-coverage": true,
 	"lines": 0,
