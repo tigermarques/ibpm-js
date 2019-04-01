@@ -4,10 +4,7 @@ node_js: 10
 branches:
   only:
     - master
-    - develop
-before_install:
-  - npm prune
 script:
-  - npm install
+  - npm test
 after_success:
   - npm run semantic-release
