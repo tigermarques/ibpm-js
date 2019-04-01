@@ -2,8 +2,8 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const nock = require('nock')
 const basicAuth = require('basic-auth')
-const users = require('../../lib/api/users')
-const { HTTP_MESSAGES } = require('./../../lib/api/common')
+const users = require('../../../lib/api/users')
+const { HTTP_MESSAGES } = require('./../../../lib/api/common')
 
 const expect = chai.expect
 chai.use(chaiAsPromised)
@@ -17,28 +17,7 @@ describe('Users', () => {
         .reply(function (url, body) {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
-            return [200, {
-              'status': '200',
-              'data': {
-                'users': [
-                  {
-                    'userID': 12,
-                    'userName': 'myUser',
-                    'fullName': 'My User',
-                    'isDisabled': false,
-                    'primaryGroup': null,
-                    'emailAddress': null,
-                    'userPreferences': {
-
-                    },
-                    'memberships': [
-                      'tw_authors',
-                      'tw_allusers'
-                    ]
-                  }
-                ]
-              }
-            }]
+            return [200, require('./responses/getByFilter.json')]
           } else {
             return [401]
           }
@@ -78,22 +57,9 @@ describe('Users', () => {
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const userName = this.req.path.split('?')[0].split('/').slice(-1)[0]
             if (userName === 'myUser') {
-              return [200, {
-                'status': '200',
-                'data': {
-                  'userID': 12,
-                  'userName': userName,
-                  'fullName': 'My User',
-                  'isDisabled': false,
-                  'primaryGroup': null,
-                  'emailAddress': null,
-                  'userPreferences': {},
-                  'memberships': [
-                    'tw_authors',
-                    'tw_allusers'
-                  ]
-                }
-              }]
+              const response = require('./responses/getByNameOrId.json')
+              response.data.userName = userName
+              return [200, response]
             } else {
               return [404]
             }
@@ -150,22 +116,9 @@ describe('Users', () => {
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const userName = this.req.path.split('?')[0].split('/').slice(-1)[0]
             if (userName === 'myUser') {
-              return [200, {
-                'status': '200',
-                'data': {
-                  'userID': 12,
-                  'userName': this.req.path.split('?')[0].split('/').slice(-1)[0],
-                  'fullName': 'My User',
-                  'isDisabled': false,
-                  'primaryGroup': null,
-                  'emailAddress': null,
-                  'userPreferences': {},
-                  'memberships': [
-                    'tw_authors',
-                    'tw_allusers'
-                  ]
-                }
-              }]
+              const response = require('./responses/updatePreference.json')
+              response.data.userName = this.req.path.split('?')[0].split('/').slice(-1)[0]
+              return [200, response]
             } else {
               return [404]
             }
