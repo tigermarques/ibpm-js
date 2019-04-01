@@ -73,21 +73,26 @@ describe('Groups', () => {
         .reply(function (url, body) {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
-            return [200, {
-              'status': '200',
-              'data': {
-                'groupID': 5,
-                'groupName': this.req.path.split('?')[0].split('/').slice(-1)[0],
-                'displayName': this.req.path.split('?')[0].split('/').slice(-1)[0],
-                'description': 'Group for people',
-                'deleted': false,
-                'members': [
-                  'myUser',
-                  'myOtherUser'
-                ],
-                'managerGroupName': null
-              }
-            }]
+            const groupName = this.req.path.split('?')[0].split('/').slice(-1)[0]
+            if (groupName === 'myGroup') {
+              return [200, {
+                'status': '200',
+                'data': {
+                  'groupID': 5,
+                  'groupName': 'myGroup',
+                  'displayName': 'myGroup',
+                  'description': 'Group for people',
+                  'deleted': false,
+                  'members': [
+                    'myUser',
+                    'myOtherUser'
+                  ],
+                  'managerGroupName': null
+                }
+              }]
+            } else {
+              return [404]
+            }
           } else {
             return [401]
           }
@@ -106,7 +111,19 @@ describe('Groups', () => {
         })
     })
 
-    it('should return status 200 when the correct input is provided', () => {
+    it('should return a Not found error when the group does not exist', () => {
+      return expect(groups.getByNameOrId({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'myOtherGroup')).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        })
+    })
+
+    it('should return group details when the correct input is provided', () => {
       return groups.getByNameOrId({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
