@@ -2,8 +2,8 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const nock = require('nock')
 const basicAuth = require('basic-auth')
-const groups = require('../../lib/api/groups')
-const { HTTP_MESSAGES } = require('./../../lib/api/common')
+const groups = require('../../../lib/api/groups')
+const { HTTP_MESSAGES } = require('./../../../lib/api/common')
 
 const expect = chai.expect
 chai.use(chaiAsPromised)
@@ -17,25 +17,7 @@ describe('Groups', () => {
         .reply(function (url, body) {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
-            return [200, {
-              'status': '200',
-              'data': {
-                'groups': [
-                  {
-                    'groupID': 3,
-                    'groupName': 'myGroup',
-                    'displayName': 'myGroup',
-                    'description': 'Group for people',
-                    'deleted': false,
-                    'members': [
-                      'myUser',
-                      'myOtherUser'
-                    ],
-                    'managerGroupName': null
-                  }
-                ]
-              }
-            }]
+            return [200, require('./responses/getByFilter.json')]
           } else {
             return [401]
           }
@@ -75,21 +57,7 @@ describe('Groups', () => {
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const groupName = this.req.path.split('?')[0].split('/').slice(-1)[0]
             if (groupName === 'myGroup') {
-              return [200, {
-                'status': '200',
-                'data': {
-                  'groupID': 5,
-                  'groupName': 'myGroup',
-                  'displayName': 'myGroup',
-                  'description': 'Group for people',
-                  'deleted': false,
-                  'members': [
-                    'myUser',
-                    'myOtherUser'
-                  ],
-                  'managerGroupName': null
-                }
-              }]
+              return [200, require('./responses/getByNameOrId.json')]
             } else {
               return [404]
             }

@@ -1,0 +1,19 @@
+{
+  "status": "200",
+  "data": {
+    "groups": [
+      {
+        "groupID": 3,
+        "groupName": "myGroup",
+        "displayName": "myGroup",
+        "description": "Group for people",
+        "deleted": false,
+        "members": [
+          "myUser",
+          "myOtherUser"
+        ],
+        "managerGroupName": null
+      }
+    ]
+  }
+}
