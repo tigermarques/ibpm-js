@@ -991,13 +991,369 @@ describe('Process Instance', () => {
     })
   })
 
-  /* describe('fireTimer')
+  describe('fireTimer', () => {
+    beforeEach(() => {
+      nock('https://myDomain:9443')
+        .post(/^\/rest\/bpm\/wle\/v1\/process/)
+        .query(true)
+        .reply(function (url, body) {
+          const auth = basicAuth.parse(this.req.headers.authorization)
+          if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
+            const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
+            const timerTokenId = queryString.parse(this.req.path.split('?')[1]).timerTokenId
 
-  describe('moveToken')
+            if (instanceId === '42584') {
+              if (timerTokenId === '2') {
+                return [200, require('./responses/fireTimer_success.json')]
+              } else {
+                return [400, require('./responses/fireTimer_timernotfound.json')]
+              }
+            } else {
+              return [500, require('./responses/fireTimer_instancenotfound.json')]
+            }
+          } else {
+            return [401]
+          }
+        })
+    })
 
-  describe('deleteToken')
+    it('should return an Unauthorized error when wrong credentials are provided', () => {
+      return expect(processInstance.fireTimer({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myWrongUser',
+        password: 'myWrongPassword'
+      }, 123456, 1)).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
+        })
+    })
 
-  describe('getRuntimeErrors')
+    it('should return a 500 error when the instance does not exist', () => {
+      return expect(processInstance.fireTimer({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 123456, 1)).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        })
+    })
 
-  describe('getBulkRuntimeErrors') */
+    it('should return a 400 error when the instance exists but the timer token does not', () => {
+      return expect(processInstance.fireTimer({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42584, 1)).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.BAD_REQUEST)
+        })
+    })
+
+    it('should return a success response with the instance details when the timer was fired', () => {
+      return expect(processInstance.fireTimer({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42584, 2)).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.be.an('object')
+        })
+    })
+  })
+
+  describe('deleteToken', () => {
+    beforeEach(() => {
+      nock('https://myDomain:9443')
+        .post(/^\/rest\/bpm\/wle\/v1\/process/)
+        .query(true)
+        .reply(function (url, body) {
+          const auth = basicAuth.parse(this.req.headers.authorization)
+          if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
+            const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
+            const tokenId = queryString.parse(this.req.path.split('?')[1]).tokenId
+
+            if (instanceId === '42584') {
+              if (tokenId === '2') {
+                return [200, require('./responses/deleteToken_success.json')]
+              } else {
+                return [404, require('./responses/deleteToken_tokennotfound.json')]
+              }
+            } else {
+              return [404, require('./responses/deleteToken_instancenotfound.json')]
+            }
+          } else {
+            return [401]
+          }
+        })
+    })
+
+    it('should return an Unauthorized error when wrong credentials are provided', () => {
+      return expect(processInstance.deleteToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myWrongUser',
+        password: 'myWrongPassword'
+      }, 123456, 1)).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
+        })
+    })
+
+    it('should return a 404 error when the instance does not exist', () => {
+      return expect(processInstance.deleteToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 123456, 1)).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        })
+    })
+
+    it('should return a 404 error when the instance exists but the timer token does not', () => {
+      return expect(processInstance.deleteToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42584, 1)).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        })
+    })
+
+    it('should return a success response with the instance details when the token is deleted', () => {
+      return expect(processInstance.deleteToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42584, 2)).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.be.an('object')
+        })
+    })
+  })
+
+  describe('moveToken', () => {
+    beforeEach(() => {
+      nock('https://myDomain:9443')
+        .post(/^\/rest\/bpm\/wle\/v1\/process/)
+        .query(true)
+        .reply(function (url, body) {
+          const auth = basicAuth.parse(this.req.headers.authorization)
+          if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
+            const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
+            const tokenId = queryString.parse(this.req.path.split('?')[1]).tokenId
+            const target = queryString.parse(this.req.path.split('?')[1]).target
+
+            if (instanceId === '42588') {
+              if (tokenId === '2') {
+                if (target === 'bpdid:fb34069ef86e808b:7a800ddb:16e361ee416:-7fd6') {
+                  return [200, require('./responses/moveToken_success.json')]
+                } else {
+                  return [500, require('./responses/moveToken_targetnotfound.json')]
+                }
+              } else {
+                return [404, require('./responses/moveToken_tokennotfound.json')]
+              }
+            } else {
+              return [404, require('./responses/moveToken_instancenotfound.json')]
+            }
+          } else {
+            return [401]
+          }
+        })
+    })
+
+    it('should return an Unauthorized error when wrong credentials are provided', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myWrongUser',
+        password: 'myWrongPassword'
+      }, 123456, 1, 'x')).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
+        })
+    })
+
+    it('should return a 404 error when the instance does not exist', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 123456, 1, 'x')).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        })
+    })
+
+    it('should return a 404 error when the instance exists but the timer token does not', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42588, 1, 'x')).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        })
+    })
+
+    it('should return a 500 error when the instance and token exist but the target does not', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42588, 2, 'x')).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        })
+    })
+
+    it('should return a success response with the instance details when the token is moved', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42588, 2, 'bpdid:fb34069ef86e808b:7a800ddb:16e361ee416:-7fd6')).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.be.an('object')
+        })
+    })
+  })
+
+  describe('getRuntimeErrors', () => {
+    beforeEach(() => {
+      nock('https://myDomain:9443')
+        .put('/rest/bpm/wle/v1/process/errors')
+        .query(true)
+        .reply(function (url, body) {
+          const auth = basicAuth.parse(this.req.headers.authorization)
+          if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
+            const instanceIds = queryString.parse(this.req.path.split('?')[1]).instanceIds.split(',')
+            const response = {
+              status: '200',
+              data: {
+                failedOperation: null,
+                runtimeErrors: null
+              }
+            }
+            for (let i = 0; i < instanceIds.length; i++) {
+              const instanceId = instanceIds[i]
+              if (instanceId === '42019') {
+                if (!response.data.runtimeErrors) {
+                  response.data.runtimeErrors = []
+                }
+                response.data.runtimeErrors.push(require('./responses/getRuntimeErrors_error.json'))
+              } else if (instanceId === '42588') {
+                if (!response.data.failedOperations) {
+                  response.data.failedOperations = []
+                }
+                response.data.failedOperations.push(require('./responses/getRuntimeErrors_noerror.json'))
+              } else {
+                if (!response.data.failedOperations) {
+                  response.data.failedOperations = []
+                }
+                const error = require('./responses/getRuntimeErrors_instancenotfound.json')
+                error.instanceId = instanceId
+                error.errorMessage = error.errorMessage.replace('@instanceId', instanceId)
+                response.data.failedOperations.push(error)
+              }
+            }
+            return [200, response]
+          } else {
+            return [401]
+          }
+        })
+    })
+
+    it('should return an Unauthorized error when wrong credentials are provided', () => {
+      return expect(processInstance.getRuntimeErrors({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myWrongUser',
+        password: 'myWrongPassword'
+      }, [123456])).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
+        })
+    })
+
+    it('should return a success response with a not found error when the instance does not exist', () => {
+      return expect(processInstance.getRuntimeErrors({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, [123456])).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.be.an('object')
+          expect(body.data.failedOperations).to.be.an('array').and.to.have.length(1)
+          expect(body.data.failedOperations).to.eql([{
+            instanceId: '123456',
+            errorMessage: 'BPDInstance with ID BPDInstance.123456 not found.'
+          }])
+        })
+    })
+
+    it('should return a success response with a failure error when the instance does not have runtime errors', () => {
+      return expect(processInstance.getRuntimeErrors({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, [42588])).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.be.an('object')
+          expect(body.data.failedOperations).to.be.an('array').and.to.have.length(1)
+          expect(body.data.failedOperations).to.eql([{
+            instanceId: '42588'
+          }])
+        })
+    })
+
+    it('should return a success response with the error details when the instance has errors', () => {
+      return expect(processInstance.getRuntimeErrors({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, [42019])).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.be.an('object')
+          expect(body.data.runtimeErrors).to.be.an('array').and.to.have.length(1)
+        })
+    })
+
+    it('should return a mixed response when some inputs were correct and some were not', () => {
+      return expect(processInstance.getRuntimeErrors({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, [123456, 42588, 42019])).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.be.an('object')
+          expect(body.data.runtimeErrors).to.be.an('array').and.to.have.length(1)
+          expect(body.data.failedOperations).to.be.an('array').and.to.have.length(2)
+          expect(body.data.failedOperations).to.eql([{
+            instanceId: '123456',
+            errorMessage: 'BPDInstance with ID BPDInstance.123456 not found.'
+          }, {
+            instanceId: '42588'
+          }])
+        })
+    })
+  })
 })
