@@ -1,6 +1,7 @@
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const nock = require('nock')
+const xml2js = require('xml2js')
 const basicAuth = require('basic-auth')
 const queryString = require('querystring')
 const processInstance = require('../../../lib/api/processInstance')
@@ -1353,6 +1354,108 @@ describe('Process Instance', () => {
           }, {
             instanceId: '42588'
           }])
+        })
+    })
+  })
+
+  describe('sendMessage', () => {
+    beforeEach(() => {
+      nock('https://myDomain:9443')
+        .post('/rest/bpm/wle/v1/process')
+        .query(true)
+        .reply(function (url, body, cb) {
+          const auth = basicAuth.parse(this.req.headers.authorization)
+          if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
+            const messageStr = queryString.parse(this.req.path.split('?')[1]).message
+            xml2js.parseStringPromise(messageStr).then(message => {
+              const processApp = message.eventmsg.event[0].$.processApp
+              const ucaName = message.eventmsg.event[0].$.ucaName
+              const eventName = message.eventmsg.event[0]._
+              if (processApp) {
+                if (ucaName || eventName) {
+                  cb(null, [200, require('./responses/sendMessage_success.json')])
+                } else {
+                  cb(null, [500, require('./responses/sendMessage_noevent.json')])
+                }
+              } else {
+                cb(null, [500, require('./responses/sendMessage_noprocessapp.json')])
+              }
+            }).catch(err => {
+              cb(null, [400, err])
+            })
+          } else {
+            cb(null, [401])
+          }
+        })
+    })
+
+    it('should return an Unauthorized error when wrong credentials are provided', () => {
+      return expect(processInstance.sendMessage({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myWrongUser',
+        password: 'myWrongPassword'
+      }, {
+        processApp: 'TFLSAND',
+        eventName: '2c5f63e6-6627-427a-81cb-e8eb1496330c'
+      })).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
+        })
+    })
+
+    it('should return an error response if no process application is provided', () => {
+      return expect(processInstance.sendMessage({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, {
+        eventName: '2c5f63e6-6627-427a-81cb-e8eb1496330c',
+        snapshot: 'SNAP1',
+        queue: 'Async Queue'
+      }, [])).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        })
+    })
+
+    it('should return an error response if no uca name and no event name are provided', () => {
+      return expect(processInstance.sendMessage({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, {
+        processApp: 'TFLSAND',
+        snapshot: 'SNAP1',
+        queue: 'Async Queue'
+      }, [])).to.eventually.be.rejected
+        .then(result => {
+          expect(result).to.be.an('error')
+          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        })
+    })
+
+    it('should return a success response if all inputs are provided', () => {
+      return expect(processInstance.sendMessage({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, {
+        processApp: 'TFLSAND',
+        snapshot: 'SNAP1',
+        eventName: '2c5f63e6-6627-427a-81cb-e8eb1496330c',
+        ucaName: 'UCA1',
+        queue: 'Async Queue'
+      }, [{
+        key: 'param1',
+        value: 'value1'
+      }])).to.eventually.be.fulfilled
+        .then(body => {
+          expect(body.status).to.equal('200')
+          expect(body.data).to.eql({
+            messageSent: true
+          })
         })
     })
   })
