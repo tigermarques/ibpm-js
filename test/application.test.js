@@ -213,6 +213,11 @@ describe('Application', () => {
       expect(myApp.processInstance).to.respondTo('bulkTerminate')
       expect(myApp.processInstance).to.respondTo('bulkRetry')
       expect(myApp.processInstance).to.respondTo('bulkDelete')
+      expect(myApp.processInstance).to.respondTo('fireTimer')
+      expect(myApp.processInstance).to.respondTo('deleteToken')
+      expect(myApp.processInstance).to.respondTo('moveToken')
+      expect(myApp.processInstance).to.respondTo('getRuntimeErrors')
+      expect(myApp.processInstance).to.respondTo('sendMessage')
     })
 
     it('should call the getById with the correct configurations', () => {
@@ -443,6 +448,156 @@ describe('Application', () => {
           username: 'user',
           password: 'pass'
         }, ['1234', '5678'])
+      })
+    })
+
+    it('should call the fireTimer with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(processInstance, 'fireTimer').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.processInstance.fireTimer('1234', '5678').then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, '1234', '5678')
+      })
+    })
+
+    it('should call the deleteToken with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(processInstance, 'deleteToken').resolves()
+      expect(stub).not.to.have.been.called
+      return Promise.all([
+        myApp.processInstance.deleteToken('1234', '5678', true),
+        myApp.processInstance.deleteToken('1234', '5678')
+      ]).then(result => {
+        expect(stub).to.have.been.calledTwice
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, '1234', '5678', true)
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, '1234', '5678', false)
+      })
+    })
+
+    it('should call the moveToken with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(processInstance, 'moveToken').resolves()
+      expect(stub).not.to.have.been.called
+      return Promise.all([
+        myApp.processInstance.moveToken('1234', '5678', 'abcd', true),
+        myApp.processInstance.moveToken('1234', '5678', 'abcd')
+      ]).then(result => {
+        expect(stub).to.have.been.calledTwice
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, '1234', '5678', 'abcd', true)
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, '1234', '5678', 'abcd', false)
+      })
+    })
+
+    it('should call the getRuntimeErrors with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(processInstance, 'getRuntimeErrors').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.processInstance.getRuntimeErrors(['1234', '5678']).then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, ['1234', '5678'])
+      })
+    })
+
+    it('should call the sendMessage with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(processInstance, 'sendMessage').resolves()
+      expect(stub).not.to.have.been.called
+      return Promise.all([
+        myApp.processInstance.sendMessage({
+          processApp: 'APP1',
+          eventName: 'event1'
+        }, [{
+          key: 'param1',
+          value: 'value1'
+        }]),
+        myApp.processInstance.sendMessage({
+          processApp: 'APP1',
+          eventName: 'event1'
+        })
+      ]).then(result => {
+        expect(stub).to.have.been.calledTwice
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, {
+          processApp: 'APP1',
+          eventName: 'event1'
+        }, [{
+          key: 'param1',
+          value: 'value1'
+        }])
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, {
+          processApp: 'APP1',
+          eventName: 'event1'
+        }, [])
       })
     })
   })

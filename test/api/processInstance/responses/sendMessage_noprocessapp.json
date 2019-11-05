@@ -1,0 +1,15 @@
+{ 
+  "status":"error",
+  "Data":{ 
+     "status":"error",
+     "exceptionType":"com.ibm.bpm.wle.api.ActionHandlerUnexpectedFailureException",
+     "errorNumber":"CWTBG0025E",
+     "errorMessage":"CWTBG0025E: Unexpected failure occurred while performing the 'sendMessage' action.  The reported failure is: '{1}':",
+     "errorMessageParameters":[ 
+        "sendMessage"
+     ],
+     "programmersDetails":"Malformed Event Manager message: expected processAppShortName",
+     "responses":null,
+     "errorData":null
+  }
+}
