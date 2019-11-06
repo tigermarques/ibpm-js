@@ -5,7 +5,7 @@ const xml2js = require('xml2js')
 const basicAuth = require('basic-auth')
 const queryString = require('querystring')
 const processInstance = require('../../../lib/api/processInstance')
-const { HTTP_MESSAGES } = require('./../../../lib/api/common')
+const { HTTP_MESSAGES } = require('./../../../lib/utils/Constants')
 
 const expect = chai.expect
 chai.use(chaiAsPromised)

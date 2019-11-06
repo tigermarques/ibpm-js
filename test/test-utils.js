@@ -1,7 +1,7 @@
 const chai = require('chai')
 const APIError = require('../lib/utils/APIError')
 const APIResponse = require('../lib/utils/APIResponse')
-const { HTTP_STATUS, HTTP_MESSAGES } = require('./../lib/api/common')
+const { HTTP_STATUS, HTTP_MESSAGES } = require('./../lib/utils/Constants')
 
 const expect = chai.expect
 

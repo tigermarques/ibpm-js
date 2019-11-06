@@ -3,7 +3,7 @@ const chaiAsPromised = require('chai-as-promised')
 const nock = require('nock')
 const basicAuth = require('basic-auth')
 const groups = require('../../../lib/api/groups')
-const { HTTP_MESSAGES } = require('./../../../lib/api/common')
+const { HTTP_MESSAGES } = require('./../../../lib/utils/Constants')
 
 const expect = chai.expect
 chai.use(chaiAsPromised)

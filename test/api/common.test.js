@@ -1,5 +1,6 @@
 const chai = require('chai')
 const common = require('../../lib/api/common')
+const { HTTP_MESSAGES } = require('../../lib/utils/Constants')
 
 const expect = chai.expect
 
@@ -52,7 +53,7 @@ describe('Common', () => {
     })).to.eventually.be.rejected
       .then(result => {
         expect(result).to.be.an('error')
-        expect(result.message).to.equal(common.HTTP_MESSAGES.BAD_REQUEST)
+        expect(result.message).to.equal(HTTP_MESSAGES.BAD_REQUEST)
       })
   })
 
@@ -62,7 +63,7 @@ describe('Common', () => {
     })).to.eventually.be.rejected
       .then(result => {
         expect(result).to.be.an('error')
-        expect(result.message).to.equal(common.HTTP_MESSAGES.UNAUTHORIZED)
+        expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
       })
   })
 
@@ -72,7 +73,7 @@ describe('Common', () => {
     })).to.eventually.be.rejected
       .then(result => {
         expect(result).to.be.an('error')
-        expect(result.message).to.equal(common.HTTP_MESSAGES.NOT_FOUND)
+        expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
       })
   })
 
@@ -82,30 +83,7 @@ describe('Common', () => {
     })).to.eventually.be.rejected
       .then(result => {
         expect(result).to.be.an('error')
-        expect(result.message).to.equal(common.HTTP_MESSAGES.SERVER_ERROR)
+        expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
       })
-  })
-
-  it('should have the correct HTTP status codes', () => {
-    expect(common.HTTP_STATUS).to.eql({
-      OK: 200,
-      ERROR_THRESHOLD: 400,
-      BAD_REQUEST: 400,
-      UNAUTHORIZED: 401,
-      NOT_FOUND: 404,
-      NOT_ACCEPTABLE: 404,
-      SERVER_ERROR: 500
-    })
-  })
-
-  it('should have the correct HTTP messages', () => {
-    expect(common.HTTP_MESSAGES).to.eql({
-      OK: 'OK',
-      BAD_REQUEST: 'Bad HTTP Request',
-      UNAUTHORIZED: 'Unauthorized Access',
-      NOT_FOUND: 'Not Found',
-      NOT_ACCEPTABLE: 'Not Acceptable',
-      SERVER_ERROR: 'Unknown Exception'
-    })
   })
 })
