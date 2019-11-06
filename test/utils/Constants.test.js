@@ -6,6 +6,7 @@ const expect = chai.expect
 describe('Constants', () => {
   it('should have the correct HTTP status codes', () => {
     expect(Constants.HTTP_STATUS).to.eql({
+      REQUEST_ERROR: 0,
       OK: 200,
       ERROR_THRESHOLD: 400,
       BAD_REQUEST: 400,
@@ -18,6 +19,7 @@ describe('Constants', () => {
 
   it('should have the correct HTTP messages', () => {
     expect(Constants.HTTP_MESSAGES).to.eql({
+      REQUEST_ERROR: 'Request Error',
       OK: 'OK',
       BAD_REQUEST: 'Bad HTTP Request',
       UNAUTHORIZED: 'Unauthorized Access',

@@ -1,6 +1,6 @@
 const chai = require('chai')
 const common = require('../../lib/api/common')
-const { HTTP_MESSAGES } = require('../../lib/utils/Constants')
+const { handleRequestError, handleBadRequest, handleUnauthorized, handleNotFound, handleUnknown, handleSuccess } = require('../test-utils')
 
 const expect = chai.expect
 
@@ -25,8 +25,8 @@ describe('Common', () => {
     return expect(new Promise((resolve, reject) => {
       return common.buildResponseHandler(resolve, reject)(new Error('my error'))
     })).to.eventually.be.rejected
+      .then(handleRequestError)
       .then(result => {
-        expect(result).to.be.an('error')
         expect(result.message).to.equal('my error')
       })
   })
@@ -40,6 +40,7 @@ describe('Common', () => {
     return expect(new Promise((resolve, reject) => {
       return common.buildResponseHandler(resolve, reject)(null, { statusCode: 200 }, body)
     })).to.eventually.be.fulfilled
+      .then(handleSuccess)
       .then(result => {
         expect(result.data).to.eql({
           property: 'value'
@@ -51,39 +52,27 @@ describe('Common', () => {
     return expect(new Promise((resolve, reject) => {
       return common.buildResponseHandler(resolve, reject)(null, { statusCode: 400 })
     })).to.eventually.be.rejected
-      .then(result => {
-        expect(result).to.be.an('error')
-        expect(result.message).to.equal(HTTP_MESSAGES.BAD_REQUEST)
-      })
+      .then(handleBadRequest)
   })
 
   it('should handle 401 UNAUTHORIZED responses properly', () => {
     return expect(new Promise((resolve, reject) => {
       return common.buildResponseHandler(resolve, reject)(null, { statusCode: 401 })
     })).to.eventually.be.rejected
-      .then(result => {
-        expect(result).to.be.an('error')
-        expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-      })
+      .then(handleUnauthorized)
   })
 
   it('should handle 404 NOT FOUND responses properly', () => {
     return expect(new Promise((resolve, reject) => {
       return common.buildResponseHandler(resolve, reject)(null, { statusCode: 404 })
     })).to.eventually.be.rejected
-      .then(result => {
-        expect(result).to.be.an('error')
-        expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
-      })
+      .then(handleNotFound)
   })
 
   it('should handle 500 ERROR responses properly', () => {
     return expect(new Promise((resolve, reject) => {
       return common.buildResponseHandler(resolve, reject)(null, { statusCode: 500 })
     })).to.eventually.be.rejected
-      .then(result => {
-        expect(result).to.be.an('error')
-        expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
-      })
+      .then(handleUnknown)
   })
 })

@@ -2,8 +2,9 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const nock = require('nock')
 const basicAuth = require('basic-auth')
+const queryString = require('querystring')
 const groups = require('../../../lib/api/groups')
-const { HTTP_MESSAGES } = require('./../../../lib/utils/Constants')
+const { handleUnauthorized, handleNotFound, handleSuccess } = require('../../test-utils')
 
 const expect = chai.expect
 chai.use(chaiAsPromised)
@@ -17,7 +18,12 @@ describe('Groups', () => {
         .reply(function (url, body) {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
-            return [200, require('./responses/getByFilter.json')]
+            const filter = queryString.parse(this.req.path.split('?')[1]).filter
+            if (filter === 'myG*') {
+              return [200, require('./responses/getByFilter/results.json')]
+            } else {
+              return [200, require('./responses/getByFilter/empty.json')]
+            }
           } else {
             return [401]
           }
@@ -30,20 +36,46 @@ describe('Groups', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 'testFilter*')).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
-    it('should return status 200 when the correct input is provided', () => {
-      return groups.getByFilter({
+    it('should return no groups when a search filter that matches no groups is provided', () => {
+      return expect(groups.getByFilter({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 'testFilter*').then((body) => {
-        expect(body.status).to.equal('200')
-      })
+      }, 'testFilter*')).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.eql({
+            groups: []
+          })
+        })
+    })
+
+    it('should return groups when a search filter that matches groups is provided', () => {
+      return expect(groups.getByFilter({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'myG*')).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.eql({
+            groups: [{
+              groupID: 3,
+              groupName: 'myGroup',
+              displayName: 'myGroup',
+              description: 'Group for people',
+              deleted: false,
+              members: [
+                'myUser',
+                'myOtherUser'
+              ],
+              managerGroupName: null
+            }]
+          })
+        })
     })
   })
 
@@ -57,9 +89,12 @@ describe('Groups', () => {
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const groupName = this.req.path.split('?')[0].split('/').slice(-1)[0]
             if (groupName === 'myGroup') {
-              return [200, require('./responses/getByNameOrId.json')]
+              return [200, require('./responses/getByNameOrId/success.json')]
             } else {
-              return [404]
+              const response = require('./responses/getByNameOrId/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@groupName', groupName)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@groupName', groupName)
+              return [404, response]
             }
           } else {
             return [401]
@@ -73,34 +108,35 @@ describe('Groups', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 'myGroup')).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
-    it('should return a Not found error when the group does not exist', () => {
+    it('should return a not found error when the group does not exist', () => {
       return expect(groups.getByNameOrId({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 'myOtherGroup')).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0006E',
+            errorMessage: 'CWTBG0006E: Group \'myOtherGroup\' not found.'
+          })
         })
     })
 
-    it('should return group details when the correct input is provided', () => {
+    it('should return user details when the correct input is provided', () => {
       return groups.getByNameOrId({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 'myGroup').then((body) => {
-        expect(body.status).to.equal('200')
-        expect(body.data).to.be.an('object')
-        expect(body.data.groupName).to.equal('myGroup')
-      })
+      }, 'myGroup')
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.groupName).to.equal('myGroup')
+        })
     })
   })
 })

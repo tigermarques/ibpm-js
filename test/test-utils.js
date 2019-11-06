@@ -6,6 +6,13 @@ const { HTTP_STATUS, HTTP_MESSAGES } = require('./../lib/utils/Constants')
 const expect = chai.expect
 
 module.exports = {
+  handleRequestError: result => {
+    expect(result).to.be.an('error')
+    expect(result).to.be.an.instanceOf(APIError)
+    expect(result.status).to.equal(HTTP_STATUS.REQUEST_ERROR)
+    return result
+  },
+
   handleBadRequest: result => {
     expect(result).to.be.an('error')
     expect(result).to.be.an.instanceOf(APIError)
