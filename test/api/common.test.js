@@ -32,13 +32,17 @@ describe('Common', () => {
 
   it('should handle 200 OK responses properly', () => {
     const body = {
-      property: 'value'
+      data: {
+        property: 'value'
+      }
     }
     return expect(new Promise((resolve, reject) => {
       return common.buildResponseHandler(resolve, reject)(null, { statusCode: 200 }, body)
     })).to.eventually.be.fulfilled
       .then(result => {
-        expect(result).to.eql(body)
+        expect(result.data).to.eql({
+          property: 'value'
+        })
       })
   })
 

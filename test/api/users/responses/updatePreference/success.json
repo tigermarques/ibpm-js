@@ -1,0 +1,20 @@
+{
+  "status": "200",
+  "data": {
+    "userID": 12,
+    "userName": "myUser",
+    "fullName": "My User",
+    "isDisabled": false,
+    "primaryGroup": null,
+    "emailAddress": "email@domain.com",
+    "userPreferences": {
+      "Task Email Address": "email@domain.com"
+    },
+    "editableUserPreferences": null,
+    "tasksCollaboration": null,
+    "memberships": [
+      "tw_authors",
+      "tw_allusers"
+    ]
+  }
+}
