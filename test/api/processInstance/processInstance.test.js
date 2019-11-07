@@ -1319,12 +1319,18 @@ describe('Process Instance', () => {
 
             if (instanceId === '42584') {
               if (timerTokenId === '2') {
-                return [200, require('./responses/fireTimer_success.json')]
+                return [200, require('./responses/fireTimer/success.json')]
               } else {
-                return [400, require('./responses/fireTimer_timernotfound.json')]
+                return [400, require('./responses/fireTimer/timerNotFound.json')]
               }
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/fireTimer/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/fireTimer/exception.json')]
             } else {
-              return [500, require('./responses/fireTimer_instancenotfound.json')]
+              const response = require('./responses/fireTimer/notFound.json')
+              response.Data.programmersDetails = response.Data.programmersDetails.replace('@instanceId', instanceId)
+              return [500, response]
             }
           } else {
             return [401]
@@ -1338,33 +1344,66 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456, 1)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
-    it('should return a 500 error when the instance does not exist', () => {
+    it('should return a not found error when the instance does not exist', () => {
       return expect(processInstance.fireTimer({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 123456, 1)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: BPDInstance with ID BPDInstance.123456 not found.'
+          })
         })
     })
 
-    it('should return a 400 error when the instance exists but the timer token does not', () => {
+    it('should return a not found error when the timer token does not exist', () => {
       return expect(processInstance.fireTimer({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 42584, 1)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.BAD_REQUEST)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0551E',
+            errorMessage: 'CWTBG0551E: The ID \'1\' is not valid. Please provide a valid ID.'
+          })
+        })
+    })
+
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.fireTimer({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'asd', 1)).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.fireTimer({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789', 1)).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
         })
     })
 
@@ -1374,9 +1413,10 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 42584, 2)).to.eventually.be.fulfilled
-        .then(body => {
-          expect(body.status).to.equal('200')
-          expect(body.data).to.be.an('object')
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.piid).to.equal('42584')
         })
     })
   })

@@ -8,7 +8,7 @@
      "errorMessageParameters":[ 
         "fireTimer"
      ],
-     "programmersDetails":"BPDInstance with ID BPDInstance.1 not found.",
+     "programmersDetails":"BPDInstance with ID BPDInstance.@instanceId not found.",
      "responses":null,
      "errorData":null
   }
