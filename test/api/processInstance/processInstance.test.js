@@ -1,5 +1,6 @@
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
+const chaiSubset = require('chai-subset')
 const nock = require('nock')
 const xml2js = require('xml2js')
 const basicAuth = require('basic-auth')
@@ -10,8 +11,9 @@ const { handleBadRequest, handleUnauthorized, handleConflict, handleNotFound, ha
 
 const expect = chai.expect
 chai.use(chaiAsPromised)
+chai.use(chaiSubset)
 
-describe.only('Process Instance', () => {
+describe('Process Instance', () => {
   describe('getById', () => {
     beforeEach(() => {
       nock('https://myDomain:9443')
@@ -1556,9 +1558,8 @@ describe.only('Process Instance', () => {
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const instanceIds = queryString.parse(this.req.path.split('?')[1]).instanceIds.split(',')
             const response = {
-              status: '200',
               data: {
-                failedOperation: null,
+                failedOperations: null,
                 runtimeErrors: null
               }
             }
@@ -1568,17 +1569,27 @@ describe.only('Process Instance', () => {
                 if (!response.data.runtimeErrors) {
                   response.data.runtimeErrors = []
                 }
-                response.data.runtimeErrors.push(require('./responses/getRuntimeErrors_error.json'))
+                response.data.runtimeErrors.push(require('./responses/getRuntimeErrors/error.json'))
               } else if (instanceId === '42588') {
                 if (!response.data.failedOperations) {
                   response.data.failedOperations = []
                 }
-                response.data.failedOperations.push(require('./responses/getRuntimeErrors_noerror.json'))
+                response.data.failedOperations.push(require('./responses/getRuntimeErrors/noError.json'))
+              } else if (instanceId === 'asd') {
+                if (!response.data.failedOperations) {
+                  response.data.failedOperations = []
+                }
+                response.data.failedOperations.push(require('./responses/getRuntimeErrors/badRequest.json'))
+              } else if (instanceId === '123456789123456789') {
+                if (!response.data.failedOperations) {
+                  response.data.failedOperations = []
+                }
+                response.data.failedOperations.push(require('./responses/getRuntimeErrors/exception.json'))
               } else {
                 if (!response.data.failedOperations) {
                   response.data.failedOperations = []
                 }
-                const error = require('./responses/getRuntimeErrors_instancenotfound.json')
+                const error = require('./responses/getRuntimeErrors/notFound.json')
                 error.instanceId = instanceId
                 error.errorMessage = error.errorMessage.replace('@instanceId', instanceId)
                 response.data.failedOperations.push(error)
@@ -1603,19 +1614,53 @@ describe.only('Process Instance', () => {
         })
     })
 
-    it('should return a success response with a not found error when the instance does not exist', () => {
+    it('should return a success response with an error when the instance does not exist', () => {
       return expect(processInstance.getRuntimeErrors({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, [123456])).to.eventually.be.fulfilled
-        .then(body => {
-          expect(body.status).to.equal('200')
-          expect(body.data).to.be.an('object')
-          expect(body.data.failedOperations).to.be.an('array').and.to.have.length(1)
-          expect(body.data.failedOperations).to.eql([{
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.runtimeErrors).to.eql([])
+          expect(response.data.failedOperations).to.eql([{
             instanceId: '123456',
             errorMessage: 'BPDInstance with ID BPDInstance.123456 not found.'
+          }])
+        })
+    })
+
+    it('should return a success response with an error when the instance id is not a number', () => {
+      return expect(processInstance.getRuntimeErrors({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, ['asd'])).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.runtimeErrors).to.eql([])
+          expect(response.data.failedOperations).to.eql([{
+            instanceId: 'asd',
+            errorMessage: 'com.ibm.bpm.wle.api.UnexpectedInstanceIDException: CWTBG0553E: Era esperado um ID de ocorrência \'BPDInstance\', mas em vez de um número o ID é \'asd\'.'
+          }])
+        })
+    })
+
+    it('should return a success response with an error when the instance id cannot be parsed', () => {
+      return expect(processInstance.getRuntimeErrors({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, ['123456789123456789'])).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.runtimeErrors).to.eql([])
+          expect(response.data.failedOperations).to.eql([{
+            instanceId: '123456789123456789',
+            errorMessage: 'PreparedStatementCallback; SQL [select BPD_INSTANCE_ID,INSTANCE_NAME,CACHED_BPD_VERSION_ID,CREATE_DATETIME,DUE_DATE,LAST_MODIFIED_DATETIME,SAVE_SEQ,EXECUTION_STATUS,ERROR,ERROR_STACK_TRACE,SHAREPOINT_SITE_URL,AT_RISK_DATE,ATTACHMENT_STORE,CLOSE_DATETIME,CASE_FOLDER_ID,CASE_FOLDER_SERVER_NAME,SECURITY_FOLDER_ID,STARTING_DOCUMENT_ID,STARTING_DOCUMENT_SERVER_NAME,DOCUMENTS_STATE,BPD_NAME,SNAPSHOT_ID,GROUP_ID,OWNER_GROUP_ID,STARTER_ID,PROJECT_ID,BPD_REF,TIP,SBO_SYNC_ENABLED from LSW_BPD_INSTANCE where BPD_INSTANCE_ID = ?]; [jcc][t4][1037][11190][4.21.29] Ocorreu uma excepção durante a conversão de BigDecimal.  Consulte Throwable anexado para mais detalhes. ERRORCODE=-4220, SQLSTATE=22003; nested exception is com.ibm.db2.jcc.am.SqlDataException: [jcc][t4][1037][11190][4.21.29] Ocorreu uma excepção durante a conversão de BigDecimal.  Consulte Throwable anexado para mais detalhes. ERRORCODE=-4220, SQLSTATE=22003'
           }])
         })
     })
@@ -1626,12 +1671,13 @@ describe.only('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, [42588])).to.eventually.be.fulfilled
-        .then(body => {
-          expect(body.status).to.equal('200')
-          expect(body.data).to.be.an('object')
-          expect(body.data.failedOperations).to.be.an('array').and.to.have.length(1)
-          expect(body.data.failedOperations).to.eql([{
-            instanceId: '42588'
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.failedOperations).to.eql([])
+          expect(response.data.runtimeErrors).to.eql([{
+            instanceId: '42588',
+            error: null
           }])
         })
     })
@@ -1642,10 +1688,18 @@ describe.only('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, [42019])).to.eventually.be.fulfilled
-        .then(body => {
-          expect(body.status).to.equal('200')
-          expect(body.data).to.be.an('object')
-          expect(body.data.runtimeErrors).to.be.an('array').and.to.have.length(1)
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.failedOperations).to.eql([])
+          expect(response.data.runtimeErrors).to.be.an('array').and.to.have.length(1)
+          expect(response.data.runtimeErrors).to.containSubset([{
+            instanceId: '42019',
+            error: {
+              instanceId: 'BPDInstance.42019',
+              errorMessage: 'Connection reset'
+            }
+          }])
         })
     })
 
@@ -1654,17 +1708,30 @@ describe.only('Process Instance', () => {
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, [123456, 42588, 42019])).to.eventually.be.fulfilled
-        .then(body => {
-          expect(body.status).to.equal('200')
-          expect(body.data).to.be.an('object')
-          expect(body.data.runtimeErrors).to.be.an('array').and.to.have.length(1)
-          expect(body.data.failedOperations).to.be.an('array').and.to.have.length(2)
-          expect(body.data.failedOperations).to.eql([{
+      }, [123456, 'asd', '123456789123456789', 42588, 42019])).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.failedOperations).to.eql([{
             instanceId: '123456',
             errorMessage: 'BPDInstance with ID BPDInstance.123456 not found.'
           }, {
-            instanceId: '42588'
+            instanceId: 'asd',
+            errorMessage: 'com.ibm.bpm.wle.api.UnexpectedInstanceIDException: CWTBG0553E: Era esperado um ID de ocorrência \'BPDInstance\', mas em vez de um número o ID é \'asd\'.'
+          }, {
+            instanceId: '123456789123456789',
+            errorMessage: 'PreparedStatementCallback; SQL [select BPD_INSTANCE_ID,INSTANCE_NAME,CACHED_BPD_VERSION_ID,CREATE_DATETIME,DUE_DATE,LAST_MODIFIED_DATETIME,SAVE_SEQ,EXECUTION_STATUS,ERROR,ERROR_STACK_TRACE,SHAREPOINT_SITE_URL,AT_RISK_DATE,ATTACHMENT_STORE,CLOSE_DATETIME,CASE_FOLDER_ID,CASE_FOLDER_SERVER_NAME,SECURITY_FOLDER_ID,STARTING_DOCUMENT_ID,STARTING_DOCUMENT_SERVER_NAME,DOCUMENTS_STATE,BPD_NAME,SNAPSHOT_ID,GROUP_ID,OWNER_GROUP_ID,STARTER_ID,PROJECT_ID,BPD_REF,TIP,SBO_SYNC_ENABLED from LSW_BPD_INSTANCE where BPD_INSTANCE_ID = ?]; [jcc][t4][1037][11190][4.21.29] Ocorreu uma excepção durante a conversão de BigDecimal.  Consulte Throwable anexado para mais detalhes. ERRORCODE=-4220, SQLSTATE=22003; nested exception is com.ibm.db2.jcc.am.SqlDataException: [jcc][t4][1037][11190][4.21.29] Ocorreu uma excepção durante a conversão de BigDecimal.  Consulte Throwable anexado para mais detalhes. ERRORCODE=-4220, SQLSTATE=22003'
+          }])
+          expect(response.data.runtimeErrors).to.be.an('array').and.to.have.length(2)
+          expect(response.data.runtimeErrors).to.containSubset([{
+            instanceId: '42588',
+            error: null
+          }, {
+            instanceId: '42019',
+            error: {
+              instanceId: 'BPDInstance.42019',
+              errorMessage: 'Connection reset'
+            }
           }])
         })
     })
@@ -1685,12 +1752,12 @@ describe.only('Process Instance', () => {
               const eventName = message.eventmsg.event[0]._
               if (processApp) {
                 if (ucaName || eventName) {
-                  cb(null, [200, require('./responses/sendMessage_success.json')])
+                  cb(null, [200, require('./responses/sendMessage/success.json')])
                 } else {
-                  cb(null, [500, require('./responses/sendMessage_noevent.json')])
+                  cb(null, [500, require('./responses/sendMessage/noEvent.json')])
                 }
               } else {
-                cb(null, [500, require('./responses/sendMessage_noprocessapp.json')])
+                cb(null, [500, require('./responses/sendMessage/noProcessApp.json')])
               }
             }).catch(err => {
               cb(null, [400, err])
@@ -1710,13 +1777,10 @@ describe.only('Process Instance', () => {
         processApp: 'TFLSAND',
         eventName: '2c5f63e6-6627-427a-81cb-e8eb1496330c'
       })).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
-    it('should return an error response if no process application is provided', () => {
+    it('should return a bad request error response if no process application is provided', () => {
       return expect(processInstance.sendMessage({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
@@ -1726,13 +1790,16 @@ describe.only('Process Instance', () => {
         snapshot: 'SNAP1',
         queue: 'Async Queue'
       }, [])).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0025E',
+            errorMessage: 'CWTBG0025E: Unexpected failure occurred while performing the \'sendMessage\' action.  The reported failure is: \'Malformed Event Manager message: expected processAppShortName\':'
+          })
         })
     })
 
-    it('should return an error response if no uca name and no event name are provided', () => {
+    it('should return a bad request error response if no uca name and no event name are provided', () => {
       return expect(processInstance.sendMessage({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
@@ -1742,9 +1809,12 @@ describe.only('Process Instance', () => {
         snapshot: 'SNAP1',
         queue: 'Async Queue'
       }, [])).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0025E',
+            errorMessage: 'CWTBG0025E: Unexpected failure occurred while performing the \'sendMessage\' action.  The reported failure is: \'Malformed Event Manager message; neither ucaname attribute nor event name are specified.\':'
+          })
         })
     })
 
@@ -1763,9 +1833,9 @@ describe.only('Process Instance', () => {
         key: 'param1',
         value: 'value1'
       }])).to.eventually.be.fulfilled
-        .then(body => {
-          expect(body.status).to.equal('200')
-          expect(body.data).to.eql({
+        .then(handleSuccess)
+        .then(response => {
+          expect(response.data).to.eql({
             messageSent: true
           })
         })

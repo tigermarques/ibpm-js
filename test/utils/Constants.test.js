@@ -28,7 +28,7 @@ describe('Constants', () => {
       FORBIDDEN: 'Forbidden',
       NOT_FOUND: 'Not Found',
       NOT_ACCEPTABLE: 'Not Acceptable',
-      CONFLICT: 'Conlict',
+      CONFLICT: 'Conflict',
       SERVER_ERROR: 'Unknown Exception'
     })
   })

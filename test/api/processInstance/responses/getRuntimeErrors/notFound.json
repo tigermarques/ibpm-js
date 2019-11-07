@@ -1,4 +1,4 @@
 { 
-  "instanceId":"1",
+  "instanceId":"@instanceId",
   "errorMessage":"BPDInstance with ID BPDInstance.@instanceId not found."
 }

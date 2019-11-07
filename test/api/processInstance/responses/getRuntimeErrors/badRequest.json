@@ -1,0 +1,4 @@
+{
+  "instanceId": "asd",
+  "errorMessage": "com.ibm.bpm.wle.api.UnexpectedInstanceIDException: CWTBG0553E: Era esperado um ID de ocorrência 'BPDInstance', mas em vez de um número o ID é 'asd'."
+}
