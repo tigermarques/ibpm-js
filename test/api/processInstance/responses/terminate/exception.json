@@ -1,0 +1,15 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.UnexpectedFailureException",
+    "errorNumber": "CWTBG0019E",
+    "errorMessage": "CWTBG0019E: Unexpected exception during execution. Exception information: 'Unexpected database exception'.",
+    "errorMessageParameters": [
+      "Unexpected database exception"
+    ],
+    "programmersDetails": "Unexpected database exception",
+    "responses": null,
+    "errorData": null
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.ActionHandlerUnexpectedFailureException",
+    "errorNumber": "CWTBG0025E",
+    "errorMessage": "CWTBG0025E: Unexpected failure occurred while performing the 'suspend' action.  The reported failure is: 'BPDInstance with ID BPDInstance.@instanceId not found.':",
+    "errorMessageParameters": [
+      "suspend",
+      "BPDInstance with ID BPDInstance.@instanceId not found."
+    ],
+    "programmersDetails": "BPDInstance with ID BPDInstance.@instanceId not found.",
+    "responses": null,
+    "errorData": null
+  }
+}

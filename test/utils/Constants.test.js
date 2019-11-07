@@ -11,8 +11,10 @@ describe('Constants', () => {
       ERROR_THRESHOLD: 400,
       BAD_REQUEST: 400,
       UNAUTHORIZED: 401,
+      FORBIDDEN: 403,
       NOT_FOUND: 404,
       NOT_ACCEPTABLE: 404,
+      CONFLICT: 409,
       SERVER_ERROR: 500
     })
   })
@@ -23,8 +25,10 @@ describe('Constants', () => {
       OK: 'OK',
       BAD_REQUEST: 'Bad HTTP Request',
       UNAUTHORIZED: 'Unauthorized Access',
+      FORBIDDEN: 'Forbidden',
       NOT_FOUND: 'Not Found',
       NOT_ACCEPTABLE: 'Not Acceptable',
+      CONFLICT: 'Conlict',
       SERVER_ERROR: 'Unknown Exception'
     })
   })

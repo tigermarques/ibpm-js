@@ -1,0 +1,32 @@
+{
+  "data": {
+    "creationTime": "2019-09-02T14:19:05Z",
+    "description": null,
+    "richDescription": null,
+    "executionState": "Terminated",
+    "state": "STATE_TERMINATED",
+    "lastModificationTime": "2019-11-07T14:25:58Z",
+    "name": "Name",
+    "piid": "42667",
+    "caseFolderServerName": null,
+    "processTemplateID": "25.3c5e256a-7103-45d7-98d4-fe4418889b10",
+    "processTemplateName": "Process",
+    "processAppName": "My App",
+    "processAppAcronym": "MYAPP",
+    "processAppID": "2066.ca89c915-b40c-45c2-b2bc-8f27b9ba8406",
+    "snapshotName": null,
+    "snapshotID": "2064.1c33ef2e-4ba0-4687-9ef6-95c632a18cc8",
+    "branchID": "2063.b620a0f2-5e5a-4327-958f-dc0ffa15b643",
+    "branchName": "Main",
+    "snapshotTip": true,
+    "startingDocumentServerName": null,
+    "dueDate": "2019-09-02T22:19:05Z",
+    "comments": [],
+    "tasks": [],
+    "documents": [],
+    "actionDetails": null,
+    "relationship": null,
+    "actions": null,
+    "starterId": "2048.9"
+  }
+}

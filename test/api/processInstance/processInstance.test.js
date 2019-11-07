@@ -6,11 +6,12 @@ const basicAuth = require('basic-auth')
 const queryString = require('querystring')
 const processInstance = require('../../../lib/api/processInstance')
 const { HTTP_MESSAGES } = require('./../../../lib/utils/Constants')
+const { handleBadRequest, handleUnauthorized, handleConflict, handleNotFound, handleUnknown, handleSuccess } = require('../../test-utils')
 
 const expect = chai.expect
 chai.use(chaiAsPromised)
 
-describe('Process Instance', () => {
+describe.only('Process Instance', () => {
   describe('getById', () => {
     beforeEach(() => {
       nock('https://myDomain:9443')
@@ -21,10 +22,16 @@ describe('Process Instance', () => {
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
             if (instanceId === '23972') {
-              const response = require('./responses/getById.json')
-              return [200, response]
+              return [200, require('./responses/getById/success.json')]
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/getById/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/getById/exception.json')]
             } else {
-              return [404]
+              const response = require('./responses/getById/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@instanceId', instanceId)
+              return [404, response]
             }
           } else {
             return [401]
@@ -38,32 +45,65 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
-    it('should return a not found error when the instance does not exist', () => {
+    it('should return a not found error when the instance id does not exist', () => {
       return expect(processInstance.getById({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0059E',
+            errorMessage: 'CWTBG0059E: The instance with the ID \'123456\' could not be found.'
+          })
+        })
+    })
+
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.getById({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'asd')).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.getById({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
         })
     })
 
     it('should return instance details when the correct input is provided', () => {
-      return processInstance.getById({
+      return expect(processInstance.getById({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 23972).then((body) => {
-        expect(body.status).to.equal('200')
-      })
+      }, 23972)).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.piid).to.equal('23972')
+        })
     })
   })
 
@@ -76,11 +116,20 @@ describe('Process Instance', () => {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
-            if (instanceId === '23972') {
-              const response = require('./responses/suspend.json')
-              return [200, response]
+            if (instanceId === '42667') {
+              return [200, require('./responses/suspend/success.json')]
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/suspend/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/suspend/exception.json')]
+            } else if (instanceId === '654321') {
+              return [401, require('./responses/suspend/forbidden.json')]
             } else {
-              return [404]
+              const response = require('./responses/suspend/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[1] = response.Data.errorMessageParameters[1].replace('@instanceId', instanceId)
+              response.Data.programmersDetails = response.Data.programmersDetails.replace('@instanceId', instanceId)
+              return [500, response]
             }
           } else {
             return [401]
@@ -94,10 +143,7 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
     it('should return a not found error when the instance does not exist', () => {
@@ -106,20 +152,72 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0025E',
+            errorMessage: 'CWTBG0025E: Unexpected failure occurred while performing the \'suspend\' action.  The reported failure is: \'BPDInstance with ID BPDInstance.123456 not found.\':'
+          })
         })
     })
 
-    it('should return instance details when the correct input is provided', () => {
-      return processInstance.suspend({
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.suspend({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 23972).then((body) => {
-        expect(body.status).to.equal('200')
-      })
+      }, 'asd')).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.suspend({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
+        })
+    })
+
+    it('should return a conflict error when the instance is not in a state that allows it to be suspended', () => {
+      return expect(processInstance.suspend({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 654321)).to.eventually.be.rejected
+        .then(handleConflict)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0549E',
+            errorMessage: 'CWTBG0549E: You are not authorized to perform the \'suspend\' action.'
+          })
+        })
+    })
+
+    it('should return instance details when the instance was suspended', () => {
+      return expect(processInstance.suspend({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42667)).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.piid).to.equal('42667')
+          expect(response.data.state).to.equal('STATE_SUSPENDED')
+        })
     })
   })
 
@@ -132,11 +230,20 @@ describe('Process Instance', () => {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
-            if (instanceId === '23972') {
-              const response = require('./responses/resume.json')
-              return [200, response]
+            if (instanceId === '42667') {
+              return [200, require('./responses/resume/success.json')]
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/resume/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/resume/exception.json')]
+            } else if (instanceId === '654321') {
+              return [409, require('./responses/resume/conflict.json')]
             } else {
-              return [404]
+              const response = require('./responses/resume/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@instanceId', instanceId)
+              response.Data.programmersDetails = response.Data.programmersDetails.replace('@instanceId', instanceId)
+              return [500, response]
             }
           } else {
             return [401]
@@ -150,10 +257,7 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
     it('should return a not found error when the instance does not exist', () => {
@@ -162,20 +266,72 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'BPDInstance with ID BPDInstance.123456 not found.\'.'
+          })
         })
     })
 
-    it('should return instance details when the correct input is provided', () => {
-      return processInstance.resume({
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.resume({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 23972).then((body) => {
-        expect(body.status).to.equal('200')
-      })
+      }, 'asd')).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.resume({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
+        })
+    })
+
+    it('should return a conflict error when the instance is not in a state that allows it to be resumed', () => {
+      return expect(processInstance.resume({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 654321)).to.eventually.be.rejected
+        .then(handleConflict)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0014E',
+            errorMessage: 'CWTBG0014E: The state \'Active\' of object \'2072.42689\' does not allow the requested action \'resume\'.'
+          })
+        })
+    })
+
+    it('should return instance details when the instance was resumed', () => {
+      return expect(processInstance.resume({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42667)).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.piid).to.equal('42667')
+          expect(response.data.state).to.equal('STATE_RUNNING')
+        })
     })
   })
 
@@ -188,11 +344,20 @@ describe('Process Instance', () => {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
-            if (instanceId === '23972') {
-              const response = require('./responses/terminate.json')
-              return [200, response]
+            if (instanceId === '42667') {
+              return [200, require('./responses/terminate/success.json')]
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/terminate/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/terminate/exception.json')]
+            } else if (instanceId === '654321') {
+              return [401, require('./responses/terminate/forbidden.json')]
             } else {
-              return [404]
+              const response = require('./responses/terminate/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[1] = response.Data.errorMessageParameters[1].replace('@instanceId', instanceId)
+              response.Data.programmersDetails = response.Data.programmersDetails.replace('@instanceId', instanceId)
+              return [500, response]
             }
           } else {
             return [401]
@@ -206,10 +371,7 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
     it('should return a not found error when the instance does not exist', () => {
@@ -218,20 +380,72 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0025E',
+            errorMessage: 'CWTBG0025E: Unexpected failure occurred while performing the \'terminate\' action.  The reported failure is: \'BPDInstance with ID BPDInstance.123456 not found.\':'
+          })
         })
     })
 
-    it('should return instance details when the correct input is provided', () => {
-      return processInstance.terminate({
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.terminate({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 23972).then((body) => {
-        expect(body.status).to.equal('200')
-      })
+      }, 'asd')).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.terminate({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
+        })
+    })
+
+    it('should return a conflict error when the instance is not in a state that allows it to be aborted', () => {
+      return expect(processInstance.terminate({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 654321)).to.eventually.be.rejected
+        .then(handleConflict)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0549E',
+            errorMessage: 'CWTBG0549E: You are not authorized to perform the \'abort\' action.'
+          })
+        })
+    })
+
+    it('should return instance details when the instance was aborted', () => {
+      return expect(processInstance.terminate({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42667)).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.piid).to.equal('42667')
+          expect(response.data.state).to.equal('STATE_TERMINATED')
+        })
     })
   })
 
@@ -244,11 +458,20 @@ describe('Process Instance', () => {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
-            if (instanceId === '23972') {
-              const response = require('./responses/retry.json')
-              return [200, response]
+            if (instanceId === '42667') {
+              return [200, require('./responses/retry/success.json')]
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/retry/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/retry/exception.json')]
+            } else if (instanceId === '654321') {
+              return [409, require('./responses/retry/conflict.json')]
             } else {
-              return [404]
+              const response = require('./responses/retry/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@instanceId', instanceId)
+              response.Data.programmersDetails = response.Data.programmersDetails.replace('@instanceId', instanceId)
+              return [500, response]
             }
           } else {
             return [401]
@@ -262,10 +485,7 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
     it('should return a not found error when the instance does not exist', () => {
@@ -274,20 +494,72 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'BPDInstance with ID BPDInstance.123456 not found.\'.'
+          })
         })
     })
 
-    it('should return instance details when the correct input is provided', () => {
-      return processInstance.retry({
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.retry({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 23972).then((body) => {
-        expect(body.status).to.equal('200')
-      })
+      }, 'asd')).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.retry({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
+        })
+    })
+
+    it('should return a conflict error when the instance is not in a state that allows it to be retried', () => {
+      return expect(processInstance.retry({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 654321)).to.eventually.be.rejected
+        .then(handleConflict)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0014E',
+            errorMessage: 'CWTBG0014E: The state \'Active\' of object \'2072.42573\' does not allow the requested action \'retry\'.'
+          })
+        })
+    })
+
+    it('should return instance details when the instance was retried', () => {
+      return expect(processInstance.retry({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42667)).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.piid).to.equal('42667')
+          expect(response.data.state).to.equal('STATE_RUNNING')
+        })
     })
   })
 
@@ -300,11 +572,17 @@ describe('Process Instance', () => {
           const auth = basicAuth.parse(this.req.headers.authorization)
           if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
             const instanceId = this.req.path.split('?')[0].split('/').slice(-1)[0]
-            if (instanceId === '23972') {
-              const response = require('./responses/delete.json')
-              return [200, response]
+            if (instanceId === '42667') {
+              return [200, require('./responses/delete/success.json')]
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/delete/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/delete/exception.json')]
             } else {
-              return [404]
+              const response = require('./responses/delete/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@instanceId', instanceId)
+              return [404, response]
             }
           } else {
             return [401]
@@ -318,10 +596,7 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
     it('should return a not found error when the instance does not exist', () => {
@@ -330,20 +605,57 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 123456)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0059E',
+            errorMessage: 'CWTBG0059E: The instance with the ID \'123456\' could not be found.'
+          })
         })
     })
 
-    it('should return instance details when the correct input is provided', () => {
-      return processInstance.delete({
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.delete({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 23972).then((body) => {
-        expect(body.status).to.equal('200')
-      })
+      }, 'asd')).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.delete({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
+        })
+    })
+
+    it('should return instance details when the instance was deleted', () => {
+      return expect(processInstance.delete({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42667)).to.eventually.be.fulfilled
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.piid).to.equal('42667')
+          expect(response.data.state).to.equal('Deleted')
+        })
     })
   })
 

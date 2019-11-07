@@ -29,6 +29,22 @@ module.exports = {
     return result
   },
 
+  handleForbidden: result => {
+    expect(result).to.be.an('error')
+    expect(result).to.be.an.instanceOf(APIError)
+    expect(result.status).to.equal(HTTP_STATUS.FORBIDDEN)
+    expect(result.message).to.equal(HTTP_MESSAGES.FORBIDDEN)
+    return result
+  },
+
+  handleConflict: result => {
+    expect(result).to.be.an('error')
+    expect(result).to.be.an.instanceOf(APIError)
+    expect(result.status).to.equal(HTTP_STATUS.CONFLICT)
+    expect(result.message).to.equal(HTTP_MESSAGES.CONFLICT)
+    return result
+  },
+
   handleNotFound: result => {
     expect(result).to.be.an('error')
     expect(result).to.be.an.instanceOf(APIError)
