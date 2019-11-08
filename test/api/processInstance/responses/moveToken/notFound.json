@@ -4,9 +4,9 @@
      "status":"error",
      "exceptionType":"com.ibm.bpm.wle.api.InstanceDoesNotExistException",
      "errorNumber":"CWTBG0059E",
-     "errorMessage":"CWTBG0059E: The instance with the ID '1' could not be found.",
+     "errorMessage":"CWTBG0059E: The instance with the ID '@instanceId' could not be found.",
      "errorMessageParameters":[ 
-        "1"
+        "@instanceId"
      ],
      "responses":null,
      "errorData":null

@@ -1,0 +1,15 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.UnexpectedInstanceIDException",
+    "errorNumber": "CWTBG0553E",
+    "errorMessage": "CWTBG0553E: A 'BPDInstance' instance id was expected, but instead of a number the id is 'asd'.",
+    "errorMessageParameters": [
+      "BPDInstance",
+      "asd"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

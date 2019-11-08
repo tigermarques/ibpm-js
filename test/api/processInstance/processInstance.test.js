@@ -7,7 +7,7 @@ const basicAuth = require('basic-auth')
 const queryString = require('querystring')
 const processInstance = require('../../../lib/api/processInstance')
 const { HTTP_MESSAGES } = require('./../../../lib/utils/Constants')
-const { handleBadRequest, handleUnauthorized, handleConflict, handleNotFound, handleUnknown, handleSuccess } = require('../../test-utils')
+const { handleBadRequest, handleUnauthorized, handleForbidden, handleConflict, handleNotFound, handleUnknown, handleSuccess } = require('../../test-utils')
 
 const expect = chai.expect
 chai.use(chaiAsPromised)
@@ -1435,6 +1435,8 @@ describe('Process Instance', () => {
             if (instanceId === '42584') {
               if (tokenId === '2') {
                 return [200, require('./responses/deleteToken/success.json')]
+              } else if (tokenId === '9') {
+                return [500, require('./responses/deleteToken/invalidToken.json')]
               } else {
                 const response = require('./responses/deleteToken/tokenNotFound.json')
                 response.Data.errorMessage = response.Data.errorMessage.replace('@tokenId', tokenId)
@@ -1481,7 +1483,7 @@ describe('Process Instance', () => {
         })
     })
 
-    it('should return a 404 error when the instance exists but the token does not', () => {
+    it('should return a not found error when the instance exists but the token does not', () => {
       return expect(processInstance.deleteToken({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
@@ -1507,6 +1509,21 @@ describe('Process Instance', () => {
           expect(response.data).to.eql({
             errorNumber: 'CWTBG0553E',
             errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a forbidden error when the token cannot be deleted', () => {
+      return expect(processInstance.deleteToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42584, 9)).to.eventually.be.rejected
+        .then(handleForbidden)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Cannot perform flowObjectInstanceCompleted() for token: BPDToken(bpdInstanceId=BpmnInstanceId(42691), tokenId=9, locationId = BPDObjectIdImpl(bpdid:e2e9e50b31ab034a:60602bd9:15da211bd67:-7ff9)). No such token is registred\'.'
           })
         })
     })
@@ -1555,15 +1572,27 @@ describe('Process Instance', () => {
             if (instanceId === '42588') {
               if (tokenId === '2') {
                 if (target === 'bpdid:fb34069ef86e808b:7a800ddb:16e361ee416:-7fd6') {
-                  return [200, require('./responses/moveToken_success.json')]
+                  return [200, require('./responses/moveToken/success.json')]
                 } else {
-                  return [500, require('./responses/moveToken_targetnotfound.json')]
+                  return [500, require('./responses/moveToken/targetNotFound.json')]
                 }
+              } else if (tokenId === '9') {
+                return [500, require('./responses/moveToken/invalidToken.json')]
               } else {
-                return [404, require('./responses/moveToken_tokennotfound.json')]
+                const response = require('./responses/moveToken/tokenNotFound.json')
+                response.Data.errorMessage = response.Data.errorMessage.replace('@tokenId', tokenId)
+                response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@tokenId', tokenId)
+                return [404, response]
               }
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/moveToken/badRequest.json')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/moveToken/exception.json')]
             } else {
-              return [404, require('./responses/moveToken_instancenotfound.json')]
+              const response = require('./responses/moveToken/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@instanceId', instanceId)
+              return [404, response]
             }
           } else {
             return [401]
@@ -1577,45 +1606,96 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456, 1, 'x')).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
-    it('should return a 404 error when the instance does not exist', () => {
+    it('should return a not found error when the instance does not exist', () => {
       return expect(processInstance.moveToken({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 123456, 1, 'x')).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0059E',
+            errorMessage: 'CWTBG0059E: The instance with the ID \'123456\' could not be found.'
+          })
         })
     })
 
-    it('should return a 404 error when the instance exists but the timer token does not', () => {
+    it('should return a not found error when the instance exists but the token does not', () => {
       return expect(processInstance.moveToken({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
-      }, 42588, 1, 'x')).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+      }, 42588, 1)).to.eventually.be.rejected
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0013E',
+            errorMessage: 'CWTBG0013E: The object \'1\' does not exist; it might have been deleted in the meantime.'
+          })
         })
     })
 
-    it('should return a 500 error when the instance and token exist but the target does not', () => {
+    it('should return a not found error when the instance and token exist, but the target step does not', () => {
       return expect(processInstance.moveToken({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 42588, 2, 'x')).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.SERVER_ERROR)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'targetFlowObjectId is invalid\'.'
+          })
+        })
+    })
+
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'asd', 1, 'x')).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a forbidden error when the token cannot be deleted', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 42588, 9, 'x')).to.eventually.be.rejected
+        .then(handleForbidden)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Cannot perform flowObjectInstanceCompleted() for token: BPDToken(bpdInstanceId=BpmnInstanceId(42691), tokenId=9, locationId = BPDObjectIdImpl(bpdid:e2e9e50b31ab034a:60602bd9:15da211bd67:-7ff9)). No such token is registred\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.moveToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789', 1, 'x')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
         })
     })
 
@@ -1625,9 +1705,10 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 42588, 2, 'bpdid:fb34069ef86e808b:7a800ddb:16e361ee416:-7fd6')).to.eventually.be.fulfilled
+        .then(handleSuccess)
         .then(body => {
-          expect(body.status).to.equal('200')
           expect(body.data).to.be.an('object')
+          expect(body.data.piid).to.equal('42588')
         })
     })
   })
