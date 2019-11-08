@@ -1434,12 +1434,22 @@ describe('Process Instance', () => {
 
             if (instanceId === '42584') {
               if (tokenId === '2') {
-                return [200, require('./responses/deleteToken_success.json')]
+                return [200, require('./responses/deleteToken/success.json')]
               } else {
-                return [404, require('./responses/deleteToken_tokennotfound.json')]
+                const response = require('./responses/deleteToken/tokenNotFound.json')
+                response.Data.errorMessage = response.Data.errorMessage.replace('@tokenId', tokenId)
+                response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@tokenId', tokenId)
+                return [404, response]
               }
+            } else if (instanceId === 'asd') {
+              return [400, require('./responses/deleteToken/badRequest')]
+            } else if (instanceId === '123456789123456789') {
+              return [500, require('./responses/deleteToken/exception')]
             } else {
-              return [404, require('./responses/deleteToken_instancenotfound.json')]
+              const response = require('./responses/deleteToken/notFound.json')
+              response.Data.errorMessage = response.Data.errorMessage.replace('@instanceId', instanceId)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@instanceId', instanceId)
+              return [404, response]
             }
           } else {
             return [401]
@@ -1453,33 +1463,66 @@ describe('Process Instance', () => {
         username: 'myWrongUser',
         password: 'myWrongPassword'
       }, 123456, 1)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.UNAUTHORIZED)
-        })
+        .then(handleUnauthorized)
     })
 
-    it('should return a 404 error when the instance does not exist', () => {
+    it('should return a not found error when the instance does not exist', () => {
       return expect(processInstance.deleteToken({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 123456, 1)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0059E',
+            errorMessage: 'CWTBG0059E: The instance with the ID \'123456\' could not be found.'
+          })
         })
     })
 
-    it('should return a 404 error when the instance exists but the timer token does not', () => {
+    it('should return a 404 error when the instance exists but the token does not', () => {
       return expect(processInstance.deleteToken({
         restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
         username: 'myUser',
         password: 'myPassword'
       }, 42584, 1)).to.eventually.be.rejected
-        .then(result => {
-          expect(result).to.be.an('error')
-          expect(result.message).to.equal(HTTP_MESSAGES.NOT_FOUND)
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0013E',
+            errorMessage: 'CWTBG0013E: The object \'1\' does not exist; it might have been deleted in the meantime.'
+          })
+        })
+    })
+
+    it('should return a bad request error when the instance id is not a number', () => {
+      return expect(processInstance.deleteToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'asd', 1)).to.eventually.be.rejected
+        .then(handleBadRequest)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0553E',
+            errorMessage: 'CWTBG0553E: A \'BPDInstance\' instance id was expected, but instead of a number the id is \'asd\'.'
+          })
+        })
+    })
+
+    it('should return a server error when the instance id cannot be parsed', () => {
+      return expect(processInstance.deleteToken({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789', 1)).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
         })
     })
 
@@ -1489,9 +1532,10 @@ describe('Process Instance', () => {
         username: 'myUser',
         password: 'myPassword'
       }, 42584, 2)).to.eventually.be.fulfilled
+        .then(handleSuccess)
         .then(body => {
-          expect(body.status).to.equal('200')
           expect(body.data).to.be.an('object')
+          expect(body.data.piid).to.equal('42584')
         })
     })
   })

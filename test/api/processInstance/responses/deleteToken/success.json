@@ -1,0 +1,129 @@
+{
+  "status": "200",
+  "data": {
+    "creationTime": "2019-11-04T11:21:49Z",
+    "description": null,
+    "richDescription": null,
+    "executionState": "Active",
+    "state": "STATE_RUNNING",
+    "lastModificationTime": "2019-11-04T13:14:28Z",
+    "name": "Processo1:42584",
+    "piid": "42584",
+    "caseFolderServerName": null,
+    "processTemplateID": "25.9358aeb8-22e5-49a5-91ec-e308642efab7",
+    "processTemplateName": "Processo1",
+    "processAppName": "TFL - Sandbox",
+    "processAppAcronym": "TFLSAND",
+    "processAppID": "2066.f5200583-e8d0-4a12-8606-74ac37bd7443",
+    "snapshotName": null,
+    "snapshotID": "2064.ae49c6d9-7755-436c-8d01-12d8610fc7a7",
+    "branchID": "2063.9c34de55-381f-4ac5-80ca-1226bdd4ba0c",
+    "branchName": "Main",
+    "snapshotTip": true,
+    "startingDocumentServerName": null,
+    "dueDate": "2019-11-04T19:21:49Z",
+    "comments": [],
+    "tasks": [],
+    "documents": [],
+    "actionDetails": null,
+    "data": "\"{}\"",
+    "variables": {},
+    "relationship": [],
+    "businessData": [],
+    "executionTree": {
+      "executionStatus": "1",
+      "root": {
+        "name": "Processo1",
+        "nodeId": "1",
+        "createdTaskIDs": null,
+        "variables": {},
+        "children": null
+      }
+    },
+    "diagram": {
+      "processAppID": "2066.f5200583-e8d0-4a12-8606-74ac37bd7443",
+      "milestone": null,
+      "step": [
+        {
+          "name": "Iniciar",
+          "type": "event",
+          "activityType": null,
+          "externalID": null,
+          "diagram": null,
+          "lane": "Equipa",
+          "x": 50,
+          "y": 50,
+          "color": "Default",
+          "attachedTimer": null,
+          "preTrackingPoint": null,
+          "postTrackingPoint": null,
+          "attachedEventHandler": null,
+          "lines": [
+            {
+              "to": "bpdid:fb34069ef86e808b:7a800ddb:16e361ee416:-7fe3",
+              "points": "",
+              "tokenID": null,
+              "name": "to Untitled"
+            }
+          ],
+          "tokenID": null,
+          "taskID": null,
+          "ID": "bpdid:7903df9268eede95:-3c68ec8a:16d897292b6:-7ffa"
+        },
+        {
+          "name": "Terminar",
+          "type": "event",
+          "activityType": null,
+          "externalID": null,
+          "diagram": null,
+          "lane": "Equipa",
+          "x": 350,
+          "y": 50,
+          "color": "Default",
+          "attachedTimer": null,
+          "preTrackingPoint": null,
+          "postTrackingPoint": null,
+          "attachedEventHandler": null,
+          "lines": null,
+          "tokenID": null,
+          "taskID": null,
+          "ID": "bpdid:7903df9268eede95:-3c68ec8a:16d897292b6:-7ff9"
+        },
+        {
+          "name": "Untitled",
+          "type": "activity",
+          "activityType": "task",
+          "externalID": "1.c2d00e9e-9c34-3e08-9258-101bd61b964d",
+          "diagram": null,
+          "lane": "Equipa",
+          "x": 170,
+          "y": 33,
+          "color": "Default",
+          "attachedTimer": null,
+          "preTrackingPoint": null,
+          "postTrackingPoint": null,
+          "attachedEventHandler": null,
+          "lines": null,
+          "tokenID": null,
+          "taskID": "189397",
+          "ID": "bpdid:fb34069ef86e808b:7a800ddb:16e361ee416:-7fe3"
+        }
+      ],
+      "lanes": [
+        {
+          "name": "Equipa",
+          "height": 150,
+          "system": false
+        },
+        {
+          "name": "Sistema",
+          "height": 150,
+          "system": true
+        }
+      ],
+      "orphaned": null
+    },
+    "actions": null,
+    "starterId": "2048.1"
+  }
+}
