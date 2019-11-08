@@ -64,7 +64,7 @@ module.exports = {
   handleSuccess: result => {
     expect(result).not.to.be.an('error')
     expect(result).to.be.an.instanceOf(APIResponse)
-    expect(result.status).to.equal(HTTP_STATUS.OK.toString())
+    expect(result.status).to.equal(HTTP_STATUS.OK)
     expect(result.message).to.equal(HTTP_MESSAGES.OK)
     expect(result).to.have.property('data')
     return result

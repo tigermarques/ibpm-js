@@ -208,11 +208,6 @@ describe('Application', () => {
       expect(myApp.processInstance).to.respondTo('terminate')
       expect(myApp.processInstance).to.respondTo('retry')
       expect(myApp.processInstance).to.respondTo('delete')
-      expect(myApp.processInstance).to.respondTo('bulkSuspend')
-      expect(myApp.processInstance).to.respondTo('bulkResume')
-      expect(myApp.processInstance).to.respondTo('bulkTerminate')
-      expect(myApp.processInstance).to.respondTo('bulkRetry')
-      expect(myApp.processInstance).to.respondTo('bulkDelete')
       expect(myApp.processInstance).to.respondTo('fireTimer')
       expect(myApp.processInstance).to.respondTo('deleteToken')
       expect(myApp.processInstance).to.respondTo('moveToken')
@@ -343,111 +338,6 @@ describe('Application', () => {
           username: 'user',
           password: 'pass'
         }, '1234')
-      })
-    })
-
-    it('should call the bulkSuspend with the correct configurations', () => {
-      const myApp = new App({
-        protocol: 'https',
-        hostname: 'domain',
-        port: '9445',
-        context: 'dev',
-        username: 'user',
-        password: 'pass'
-      })
-
-      const stub = sinon.stub(processInstance, 'bulkSuspend').resolves()
-      expect(stub).not.to.have.been.called
-      return myApp.processInstance.bulkSuspend(['1234', '5678']).then(result => {
-        expect(stub).to.have.been.calledWith({
-          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
-          username: 'user',
-          password: 'pass'
-        }, ['1234', '5678'])
-      })
-    })
-
-    it('should call the bulkResume with the correct configurations', () => {
-      const myApp = new App({
-        protocol: 'https',
-        hostname: 'domain',
-        port: '9445',
-        context: 'dev',
-        username: 'user',
-        password: 'pass'
-      })
-
-      const stub = sinon.stub(processInstance, 'bulkResume').resolves()
-      expect(stub).not.to.have.been.called
-      return myApp.processInstance.bulkResume(['1234', '5678']).then(result => {
-        expect(stub).to.have.been.calledWith({
-          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
-          username: 'user',
-          password: 'pass'
-        }, ['1234', '5678'])
-      })
-    })
-
-    it('should call the bulkTerminate with the correct configurations', () => {
-      const myApp = new App({
-        protocol: 'https',
-        hostname: 'domain',
-        port: '9445',
-        context: 'dev',
-        username: 'user',
-        password: 'pass'
-      })
-
-      const stub = sinon.stub(processInstance, 'bulkTerminate').resolves()
-      expect(stub).not.to.have.been.called
-      return myApp.processInstance.bulkTerminate(['1234', '5678']).then(result => {
-        expect(stub).to.have.been.calledWith({
-          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
-          username: 'user',
-          password: 'pass'
-        }, ['1234', '5678'])
-      })
-    })
-
-    it('should call the bulkRetry with the correct configurations', () => {
-      const myApp = new App({
-        protocol: 'https',
-        hostname: 'domain',
-        port: '9445',
-        context: 'dev',
-        username: 'user',
-        password: 'pass'
-      })
-
-      const stub = sinon.stub(processInstance, 'bulkRetry').resolves()
-      expect(stub).not.to.have.been.called
-      return myApp.processInstance.bulkRetry(['1234', '5678']).then(result => {
-        expect(stub).to.have.been.calledWith({
-          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
-          username: 'user',
-          password: 'pass'
-        }, ['1234', '5678'])
-      })
-    })
-
-    it('should call the bulkDelete with the correct configurations', () => {
-      const myApp = new App({
-        protocol: 'https',
-        hostname: 'domain',
-        port: '9445',
-        context: 'dev',
-        username: 'user',
-        password: 'pass'
-      })
-
-      const stub = sinon.stub(processInstance, 'bulkDelete').resolves()
-      expect(stub).not.to.have.been.called
-      return myApp.processInstance.bulkDelete(['1234', '5678']).then(result => {
-        expect(stub).to.have.been.calledWith({
-          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
-          username: 'user',
-          password: 'pass'
-        }, ['1234', '5678'])
       })
     })
 
