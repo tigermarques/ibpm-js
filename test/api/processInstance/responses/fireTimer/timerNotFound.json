@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.InvalidIDException",
+    "errorNumber": "CWTBG0551E",
+    "errorMessage": "CWTBG0551E: The ID '1' is not valid. Please provide a valid ID.",
+    "errorMessageParameters": [
+      "1"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

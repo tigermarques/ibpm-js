@@ -1,0 +1,16 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.WrongStateException",
+    "errorNumber": "CWTBG0014E",
+    "errorMessage": "CWTBG0014E: The state 'Active' of object '2072.42573' does not allow the requested action 'retry'.",
+    "errorMessageParameters": [
+      "Active",
+      "2072.42573",
+      "retry"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.UnexpectedFailureException",
+    "errorNumber": "CWTBG0019E",
+    "errorMessage": "CWTBG0019E: Unexpected exception during execution. Exception information: 'fireTimer'.",
+    "errorMessageParameters": [
+      "fireTimer"
+    ],
+    "programmersDetails": "BPDInstance with ID BPDInstance.@instanceId not found.",
+    "responses": null,
+    "errorData": null
+  }
+}

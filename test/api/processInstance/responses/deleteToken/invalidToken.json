@@ -1,0 +1,15 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.UnexpectedFailureException",
+    "errorNumber": "CWTBG0019E",
+    "errorMessage": "CWTBG0019E: Unexpected exception during execution. Exception information: 'Cannot perform flowObjectInstanceCompleted() for token: BPDToken(bpdInstanceId=BpmnInstanceId(42691), tokenId=9, locationId = BPDObjectIdImpl(bpdid:e2e9e50b31ab034a:60602bd9:15da211bd67:-7ff9)). No such token is registred'.",
+    "errorMessageParameters": [
+      "Cannot perform flowObjectInstanceCompleted() for token: BPDToken(bpdInstanceId=BpmnInstanceId(42691), tokenId=9, locationId = BPDObjectIdImpl(bpdid:e2e9e50b31ab034a:60602bd9:15da211bd67:-7ff9)). No such token is registred"
+    ],
+    "programmersDetails": "Cannot perform flowObjectInstanceCompleted() for token: BPDToken(bpdInstanceId=BpmnInstanceId(42691), tokenId=9, locationId = BPDObjectIdImpl(bpdid:e2e9e50b31ab034a:60602bd9:15da211bd67:-7ff9)). No such token is registred",
+    "responses": null,
+    "errorData": null
+  }
+}

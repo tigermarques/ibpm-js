@@ -1,0 +1,15 @@
+{ 
+  "status":"error",
+  "Data":{ 
+     "status":"error",
+     "exceptionType":"com.ibm.bpm.wle.api.UnexpectedFailureException",
+     "errorNumber":"CWTBG0019E",
+     "errorMessage":"CWTBG0019E: Unexpected exception during execution. Exception information: 'CWWIM3006W  The '@xsi:type='PersonAccount' and principalName= \"my\"User\"' search expression is malformed.'.",
+     "errorMessageParameters":[ 
+        "CWWIM3006W  The '@xsi:type='PersonAccount' and principalName= \"my\"User\"' search expression is malformed."
+     ],
+     "programmersDetails":"CWWIM3006W  The '@xsi:type='PersonAccount' and principalName= \"my\"User\"' search expression is malformed.",
+     "responses":null,
+     "errorData":null
+  }
+}

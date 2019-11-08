@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.InvalidUserPreferenceKeyException",
+    "errorNumber": "CWTBG0541E",
+    "errorMessage": "CWTBG0541E: User preference key '@attribute' is not valid.",
+    "errorMessageParameters": [
+      "@attribute"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

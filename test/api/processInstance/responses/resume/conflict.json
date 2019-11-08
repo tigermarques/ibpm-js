@@ -1,0 +1,16 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.WrongStateException",
+    "errorNumber": "CWTBG0014E",
+    "errorMessage": "CWTBG0014E: The state 'Active' of object '2072.42689' does not allow the requested action 'resume'.",
+    "errorMessageParameters": [
+      "Active",
+      "2072.42689",
+      "resume"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}
