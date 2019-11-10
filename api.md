@@ -28,7 +28,12 @@
 <dt><a href="#GroupsGetByFilterAPIResponse">GroupsGetByFilterAPIResponse</a> : <code>object</code></dt>
 <dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
 </dd>
+<dt><a href="#GroupsGetByNameOrIdAPIResponse">GroupsGetByNameOrIdAPIResponse</a> : <code>object</code></dt>
+<dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
+</dd>
 <dt><a href="#BPMInstanceConfig">BPMInstanceConfig</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#APIErrorDetails">APIErrorDetails</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
 
@@ -42,6 +47,7 @@ Class that represents a BPM Instance
 * [BPMInstance](#BPMInstance)
     * [.groups](#BPMInstance.groups) : <code>object</code>
         * [.getByFilter(filter)](#BPMInstance.groups.getByFilter) ⇒ [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.getByNameOrId(nameOrId)](#BPMInstance.groups.getByNameOrId) ⇒ [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
 
 <a name="BPMInstance.groups"></a>
 
@@ -49,6 +55,11 @@ Class that represents a BPM Instance
 Prop namespace
 
 **Kind**: static namespace of [<code>BPMInstance</code>](#BPMInstance)  
+
+* [.groups](#BPMInstance.groups) : <code>object</code>
+    * [.getByFilter(filter)](#BPMInstance.groups.getByFilter) ⇒ [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.getByNameOrId(nameOrId)](#BPMInstance.groups.getByNameOrId) ⇒ [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+
 <a name="BPMInstance.groups.getByFilter"></a>
 
 #### groups.getByFilter(filter) ⇒ [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
@@ -60,6 +71,18 @@ Get a list of users by providing a search filter.
 | Param | Type | Description |
 | --- | --- | --- |
 | filter | <code>string</code> | A simple regular expression to be used to filter the list of users returned. Example: `tw_*` returns all users whose names begin with `tw_` |
+
+<a name="BPMInstance.groups.getByNameOrId"></a>
+
+#### groups.getByNameOrId(nameOrId) ⇒ [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Get a list of users by providing a search filter.
+
+**Kind**: static method of [<code>groups</code>](#BPMInstance.groups)  
+**Returns**: [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| nameOrId | <code>string</code> | Group name or ID |
 
 <a name="APIError"></a>
 
@@ -77,7 +100,7 @@ Class constructor
 | --- | --- | --- |
 | message | <code>string</code> | message that is a text representation of the status property |
 | status | <code>number</code> | HTTP status code for the response (will be at least 400) |
-| data | <code>\*</code> | data concerning the error itself |
+| data | [<code>APIErrorDetails</code>](#APIErrorDetails) | data concerning the error itself |
 
 <a name="APIResponse"></a>
 
@@ -143,6 +166,19 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | --- | --- | --- |
 | data | [<code>Array.&lt;Group&gt;</code>](#Group) | list of groups returned by IBM BPM |
 
+<a name="GroupsGetByNameOrIdAPIResponse"></a>
+
+## GroupsGetByNameOrIdAPIResponse : <code>object</code>
+Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides the `data` property
+
+**Kind**: global typedef  
+**Extends**: [<code>APIResponse</code>](#APIResponse)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| data | [<code>Group</code>](#Group) | group details |
+
 <a name="BPMInstanceConfig"></a>
 
 ## BPMInstanceConfig : <code>Object</code>
@@ -157,4 +193,15 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | context | <code>string</code> |  | Additional URL content |
 | username | <code>string</code> | <code>&quot;bpmadmin&quot;</code> | Username |
 | password | <code>string</code> | <code>&quot;bpmadmin&quot;</code> | Password |
+
+<a name="APIErrorDetails"></a>
+
+## APIErrorDetails : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| errorNumber | <code>string</code> | IBM BPM error code |
+| errorMessage | <code>string</code> | IBM BPM error description |
 
