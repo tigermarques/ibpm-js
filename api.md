@@ -40,7 +40,7 @@ Class that represents a BPM Instance
 
 * [BPMInstance](#BPMInstance)
     * [.groups](#BPMInstance.groups) : <code>object</code>
-        * [.getByFilter(filter)](#BPMInstance.groups.getByFilter) ⇒ <code>Promise.&lt;(GroupsGetByFilterAPIResponse\|APIError)&gt;</code>
+        * [.getByFilter(filter)](#BPMInstance.groups.getByFilter) ⇒ [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
 
 <a name="BPMInstance.groups"></a>
 
@@ -50,15 +50,15 @@ Prop namespace
 **Kind**: static namespace of [<code>BPMInstance</code>](#BPMInstance)  
 <a name="BPMInstance.groups.getByFilter"></a>
 
-#### groups.getByFilter(filter) ⇒ <code>Promise.&lt;(GroupsGetByFilterAPIResponse\|APIError)&gt;</code>
+#### groups.getByFilter(filter) ⇒ [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
 Get a list of users by providing a search filter.
 
 **Kind**: static method of [<code>groups</code>](#BPMInstance.groups)  
-**Returns**: <code>Promise.&lt;(GroupsGetByFilterAPIResponse\|APIError)&gt;</code> - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+**Returns**: [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| filter | <code>string</code> | A simple regular expression to be used to filter the list of users returned. Example: tw_* returns all users whose names begin with tw_ |
+| filter | <code>string</code> | A simple regular expression to be used to filter the list of users returned. Example: `tw_*` returns all users whose names begin with `tw_` |
 
 <a name="APIError"></a>
 
