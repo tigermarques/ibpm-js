@@ -133,6 +133,7 @@ Method to get or create a workspace
 
 ## GroupsGetByFilterAPIResponse : <code>Object</code>
 **Kind**: global typedef  
+**Extends**: [<code>APIResponse</code>](#APIResponse)  
 
 | Param | Type | Description |
 | --- | --- | --- |
