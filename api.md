@@ -25,8 +25,9 @@
 <dl>
 <dt><a href="#Group">Group</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#GroupsGetByFilterAPIResponse">GroupsGetByFilterAPIResponse</a> : <code>Object</code></dt>
-<dd></dd>
+<dt><a href="#GroupsGetByFilterAPIResponse">GroupsGetByFilterAPIResponse</a> : <code>object</code></dt>
+<dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
+</dd>
 <dt><a href="#BPMInstanceConfig">BPMInstanceConfig</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
@@ -131,15 +132,11 @@ Method to get or create a workspace
 
 <a name="GroupsGetByFilterAPIResponse"></a>
 
-## GroupsGetByFilterAPIResponse : <code>Object</code>
+## GroupsGetByFilterAPIResponse : <code>object</code>
+Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides the `data` property
+
 **Kind**: global typedef  
 **Extends**: [<code>APIResponse</code>](#APIResponse)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| message | <code>string</code> | message that is a text representation of the status property |
-| status | <code>number</code> | HTTP status code for the response (will be between 200 and 399) |
-
 **Properties**
 
 | Name | Type | Description |
