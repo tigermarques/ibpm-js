@@ -43,11 +43,11 @@
 <dd></dd>
 <dt><a href="#MessageResponse">MessageResponse</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#RuntimeErrorFailedOperation">RuntimeErrorFailedOperation</a></dt>
+<dt><a href="#RuntimeErrorFailedOperation">RuntimeErrorFailedOperation</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#RuntimeError">RuntimeError</a></dt>
+<dt><a href="#RuntimeError">RuntimeError</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#RuntimeErrorResponse">RuntimeErrorResponse</a></dt>
+<dt><a href="#RuntimeErrorResponse">RuntimeErrorResponse</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#ProcessInstanceAPIResponse">ProcessInstanceAPIResponse</a> : <code>object</code></dt>
 <dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
@@ -481,7 +481,6 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | owner | <code>string</code> | Task owner |
 | priority | <code>number</code> | Task priority level |
 | priorityName | <code>string</code> | Task priority description |
-| kind | <code>string</code> | Task kind |
 | state | <code>string</code> | Task state |
 | status | <code>string</code> | Task status |
 | serviceID | <code>string</code> | If the task is a service, this field contains the service's ID |
@@ -511,6 +510,7 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | processAppAcronym | <code>string</code> | Process Application Acronym that this instance belongs to |
 | processAppName | <code>string</code> | Process Application Name that this instance belongs to |
 | snapshotID | <code>string</code> | Snapshot ID that this instance belongs to |
+| snapshotName | <code>string</code> | Snapshot name that this instance belongs to |
 | snapshotTip | <code>boolean</code> | `true` if the instance snapshot is the tip snapshot and `false` otherwise |
 | branchID | <code>string</code> | Branch ID that this instance belongs to |
 | branchName | <code>string</code> | Branch Name that this instance belongs to |
@@ -562,7 +562,7 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 
 <a name="RuntimeErrorFailedOperation"></a>
 
-## RuntimeErrorFailedOperation
+## RuntimeErrorFailedOperation : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -573,7 +573,7 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 
 <a name="RuntimeError"></a>
 
-## RuntimeError
+## RuntimeError : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -592,7 +592,7 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 
 <a name="RuntimeErrorResponse"></a>
 
-## RuntimeErrorResponse
+## RuntimeErrorResponse : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
