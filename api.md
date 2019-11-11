@@ -37,7 +37,22 @@
 <dd></dd>
 <dt><a href="#InstanceDetails">InstanceDetails</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#ProcessInstanceGetByIDAPIResponse">ProcessInstanceGetByIDAPIResponse</a> : <code>object</code></dt>
+<dt><a href="#MessageRequest">MessageRequest</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#MessageParameter">MessageParameter</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#MessageResponse">MessageResponse</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#RuntimeErrorFailedOperation">RuntimeErrorFailedOperation</a></dt>
+<dd></dd>
+<dt><a href="#RuntimeError">RuntimeError</a></dt>
+<dd></dd>
+<dt><a href="#RuntimeErrorResponse">RuntimeErrorResponse</a></dt>
+<dd></dd>
+<dt><a href="#ProcessInstanceAPIResponse">ProcessInstanceAPIResponse</a> : <code>object</code></dt>
+<dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
+</dd>
+<dt><a href="#ProcessInstanceSendMessageAPIResponse">ProcessInstanceSendMessageAPIResponse</a> : <code>object</code></dt>
 <dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
 </dd>
 <dt><a href="#UserDetails">UserDetails</a> : <code>object</code></dt>
@@ -73,7 +88,17 @@ Class that represents a BPM Instance
         * [.getByNameOrId(usernameOrId)](#BPMInstance.users.getByNameOrId) ⇒ [<code>Promise.&lt;UsersGetByNameOrIdAPIResponse&gt;</code>](#UsersGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
         * [.updatePreference(usernameOrId, key, value)](#BPMInstance.users.updatePreference) ⇒ [<code>Promise.&lt;UsersUpdatePreferenceAPIResponse&gt;</code>](#UsersUpdatePreferenceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
     * [.processInstance](#BPMInstance.processInstance) : <code>object</code>
-        * [.getById(instanceId)](#BPMInstance.processInstance.getById) ⇒ [<code>Promise.&lt;ProcessInstanceGetByIDAPIResponse&gt;</code>](#ProcessInstanceGetByIDAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.getById(instanceId)](#BPMInstance.processInstance.getById) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.suspend(instanceId)](#BPMInstance.processInstance.suspend) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.resume(instanceId)](#BPMInstance.processInstance.resume) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.terminate(instanceId)](#BPMInstance.processInstance.terminate) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.retry(instanceId)](#BPMInstance.processInstance.retry) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.delete(instanceId)](#BPMInstance.processInstance.delete) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.fireTimer(instanceId)](#BPMInstance.processInstance.fireTimer) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.deleteToken(instanceId)](#BPMInstance.processInstance.deleteToken) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.moveToken(instanceId)](#BPMInstance.processInstance.moveToken) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.getRuntimeErrors(instanceIds)](#BPMInstance.processInstance.getRuntimeErrors) ⇒ [<code>Promise.&lt;RuntimeErrorResponse&gt;</code>](#RuntimeErrorResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.sendMessage(message, parameters)](#BPMInstance.processInstance.sendMessage) ⇒ [<code>Promise.&lt;ProcessInstanceSendMessageAPIResponse&gt;</code>](#ProcessInstanceSendMessageAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
 
 <a name="BPMInstance.groups"></a>
 
@@ -160,17 +185,152 @@ Update a user preference.
 
 ### BPMInstance.processInstance : <code>object</code>
 **Kind**: static namespace of [<code>BPMInstance</code>](#BPMInstance)  
+
+* [.processInstance](#BPMInstance.processInstance) : <code>object</code>
+    * [.getById(instanceId)](#BPMInstance.processInstance.getById) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.suspend(instanceId)](#BPMInstance.processInstance.suspend) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.resume(instanceId)](#BPMInstance.processInstance.resume) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.terminate(instanceId)](#BPMInstance.processInstance.terminate) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.retry(instanceId)](#BPMInstance.processInstance.retry) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.delete(instanceId)](#BPMInstance.processInstance.delete) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.fireTimer(instanceId)](#BPMInstance.processInstance.fireTimer) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.deleteToken(instanceId)](#BPMInstance.processInstance.deleteToken) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.moveToken(instanceId)](#BPMInstance.processInstance.moveToken) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.getRuntimeErrors(instanceIds)](#BPMInstance.processInstance.getRuntimeErrors) ⇒ [<code>Promise.&lt;RuntimeErrorResponse&gt;</code>](#RuntimeErrorResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.sendMessage(message, parameters)](#BPMInstance.processInstance.sendMessage) ⇒ [<code>Promise.&lt;ProcessInstanceSendMessageAPIResponse&gt;</code>](#ProcessInstanceSendMessageAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+
 <a name="BPMInstance.processInstance.getById"></a>
 
-#### processInstance.getById(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceGetByIDAPIResponse&gt;</code>](#ProcessInstanceGetByIDAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
-Get a user details.
+#### processInstance.getById(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Get a process instance details.
 
 **Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
-**Returns**: [<code>Promise.&lt;ProcessInstanceGetByIDAPIResponse&gt;</code>](#ProcessInstanceGetByIDAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.suspend"></a>
+
+#### processInstance.suspend(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Suspend a process instance.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.resume"></a>
+
+#### processInstance.resume(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Resume a process instance.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.terminate"></a>
+
+#### processInstance.terminate(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Terminate a process instance.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.retry"></a>
+
+#### processInstance.retry(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Retry a process instance.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.delete"></a>
+
+#### processInstance.delete(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Delete a process instance.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.fireTimer"></a>
+
+#### processInstance.fireTimer(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Fire a process instance timer.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.deleteToken"></a>
+
+#### processInstance.deleteToken(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Delete a process instance token.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.moveToken"></a>
+
+#### processInstance.moveToken(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Move a process instance token.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceAPIResponse&gt;</code>](#ProcessInstanceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
+<a name="BPMInstance.processInstance.getRuntimeErrors"></a>
+
+#### processInstance.getRuntimeErrors(instanceIds) ⇒ [<code>Promise.&lt;RuntimeErrorResponse&gt;</code>](#RuntimeErrorResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Get a list of runtime errors.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;RuntimeErrorResponse&gt;</code>](#RuntimeErrorResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceIds | <code>Array.&lt;string&gt;</code> | List of IDs to get errors for |
+
+<a name="BPMInstance.processInstance.sendMessage"></a>
+
+#### processInstance.sendMessage(message, parameters) ⇒ [<code>Promise.&lt;ProcessInstanceSendMessageAPIResponse&gt;</code>](#ProcessInstanceSendMessageAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Send a message to IBM BPM (for UCA triggering).
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceSendMessageAPIResponse&gt;</code>](#ProcessInstanceSendMessageAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| message | [<code>MessageRequest</code>](#MessageRequest) | Message to send |
+| parameters | [<code>Array.&lt;MessageParameter&gt;</code>](#MessageParameter) | List of parameters to send with the message |
 
 <a name="APIError"></a>
 
@@ -365,9 +525,85 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | documents | [<code>Array.&lt;InstanceDocument&gt;</code>](#InstanceDocument) | List of instance documents |
 | tasks | [<code>Array.&lt;TaskDetails&gt;</code>](#TaskDetails) | List of instance tasks |
 
-<a name="ProcessInstanceGetByIDAPIResponse"></a>
+<a name="MessageRequest"></a>
 
-## ProcessInstanceGetByIDAPIResponse : <code>object</code>
+## MessageRequest : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| processApp | <code>string</code> | Process Application acronym |
+| eventName | <code>string</code> | Event identifier |
+| [ucaName] | <code>string</code> | UCA Name |
+| [snapshot] | <code>string</code> | Snapshot name. If you do not include the snapshot name in the message, the Event Manager uses the default snapshot on the target Process Server for start message events. For intermediate message events, if you do not include the snapshot name in the message, all active snapshots receive events. |
+| [queue] | <code>string</code> | The name of the queue for the event to run in |
+
+<a name="MessageParameter"></a>
+
+## MessageParameter : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| key | <code>string</code> | parameter key |
+| value | <code>string</code> | parameter value |
+
+<a name="MessageResponse"></a>
+
+## MessageResponse : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| messageSent | <code>boolean</code> | `true` if the message was sent successfully and `false` otherwise |
+
+<a name="RuntimeErrorFailedOperation"></a>
+
+## RuntimeErrorFailedOperation
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance internal ID |
+| errorMessage | <code>string</code> | Error message |
+
+<a name="RuntimeError"></a>
+
+## RuntimeError
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance internal ID |
+| taskId | <code>string</code> | Task internal ID |
+| errorMessage | <code>string</code> | Error message |
+| errorCode | <code>string</code> | Error code |
+| javaTrace | <code>string</code> | Java trace |
+| jsTrace | <code>string</code> | JS trace |
+| twTrace | <code>string</code> | TW trace |
+| timestamp | <code>date</code> | Error date |
+| branchId | <code>string</code> | Branch internal ID |
+| snapshotId | <code>string</code> | Snapshot internal ID |
+
+<a name="RuntimeErrorResponse"></a>
+
+## RuntimeErrorResponse
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| failedOperations | [<code>Array.&lt;RuntimeErrorFailedOperation&gt;</code>](#RuntimeErrorFailedOperation) | List of failed operations |
+| runtimeErrors | [<code>Array.&lt;RuntimeError&gt;</code>](#RuntimeError) | List of runtime errors |
+
+<a name="ProcessInstanceAPIResponse"></a>
+
+## ProcessInstanceAPIResponse : <code>object</code>
 Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides the `data` property
 
 **Kind**: global typedef  
@@ -377,6 +613,19 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | Name | Type | Description |
 | --- | --- | --- |
 | data | [<code>InstanceDetails</code>](#InstanceDetails) | instance details |
+
+<a name="ProcessInstanceSendMessageAPIResponse"></a>
+
+## ProcessInstanceSendMessageAPIResponse : <code>object</code>
+Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides the `data` property
+
+**Kind**: global typedef  
+**Extends**: [<code>APIResponse</code>](#APIResponse)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| data | [<code>MessageResponse</code>](#MessageResponse) | message status |
 
 <a name="UserDetails"></a>
 
