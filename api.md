@@ -33,7 +33,7 @@
 </dd>
 <dt><a href="#InstanceDocument">InstanceDocument</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#TaskDetails2">TaskDetails2</a> : <code>object</code></dt>
+<dt><a href="#TaskDetails">TaskDetails</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#InstanceDetails">InstanceDetails</a> : <code>object</code></dt>
 <dd></dd>
@@ -284,19 +284,21 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | url | <code>string</code> | Document URL |
 | version | <code>number</code> | Document version |
 
-<a name="TaskDetails2"></a>
+<a name="TaskDetails"></a>
 
-## TaskDetails2 : <code>object</code>
+## TaskDetails : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
 | --- | --- | --- |
+| tkiid | <code>string</code> | Task internal ID |
 | activationTime | <code>date</code> | Date the task instance is set into the ready state |
 | atRiskTime | <code>date</code> | Date the task instance is at risk |
 | completionTime | <code>date</code> | Date when the task instance reached an end state |
 | dueTime | <code>date</code> | Date when the task is due |
 | lastModificationTime | <code>date</code> | The latest date at which the task was created, started or completed |
+| startTime | <code>date</code> | Date when the task was claimed or when an invocation task enters the running state |
 | assignedToID | <code>number</code> | Task owner ID |
 | assignedTo | <code>string</code> | Task owner |
 | assignedToDisplayName | <code>string</code> | Task owner display name |
@@ -308,9 +310,11 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | managerTeamName | <code>string</code> | The name of the manager team |
 | managerTeamDisplayName | <code>string</code> | The display name of the manager team |
 | data | <code>object</code> | Task instance data |
+| processData | <code>object</code> | Data of the process instance containing the task |
 | description | <code>string</code> | Task description |
 | displayName | <code>string</code> | Task display name |
 | externalActivityID | <code>string</code> | ID of the external activity |
+| externalActivitySnapshotID | <code>string</code> | Snapshot ID of the external implementation |
 | kind | <code>string</code> | Task kind |
 | name | <code>string</code> | Task name |
 | originator | <code>string</code> | ID of the user that created the task instance or on whose behalf the task instance was created |
@@ -318,6 +322,13 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | priority | <code>number</code> | Task priority level |
 | priorityName | <code>string</code> | Task priority description |
 | kind | <code>string</code> | Task kind |
+| state | <code>string</code> | Task state |
+| status | <code>string</code> | Task status |
+| serviceID | <code>string</code> | If the task is a service, this field contains the service's ID |
+| serviceSnapshotID | <code>string</code> | Snapshot ID of the external implementation |
+| flowObjectID | <code>string</code> | ID of flow object |
+| nextTaskId | <code>number</code> | Next task ID |
+| actions | <code>Array.&lt;string&gt;</code> | List of available actions for the task instance |
 
 <a name="InstanceDetails"></a>
 
@@ -352,7 +363,7 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | executionTree | <code>object</code> | Execution tree associated with the process |
 | diagram | <code>object</code> | BPD diagram of this instance, including existing tokens and associated task for the instance |
 | documents | [<code>Array.&lt;InstanceDocument&gt;</code>](#InstanceDocument) | List of instance documents |
-| tasks | <code>Array.&lt;TaskDetails&gt;</code> | List of instance tasks |
+| tasks | [<code>Array.&lt;TaskDetails&gt;</code>](#TaskDetails) | List of instance tasks |
 
 <a name="ProcessInstanceGetByIDAPIResponse"></a>
 
