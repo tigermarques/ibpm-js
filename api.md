@@ -37,6 +37,9 @@
 <dd></dd>
 <dt><a href="#InstanceDetails">InstanceDetails</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#ProcessInstanceGetByIDAPIResponse">ProcessInstanceGetByIDAPIResponse</a> : <code>object</code></dt>
+<dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
+</dd>
 <dt><a href="#UserDetails">UserDetails</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#UsersGetByFilterAPIResponse">UsersGetByFilterAPIResponse</a> : <code>object</code></dt>
@@ -70,6 +73,7 @@ Class that represents a BPM Instance
         * [.getByNameOrId(usernameOrId)](#BPMInstance.users.getByNameOrId) ⇒ [<code>Promise.&lt;UsersGetByNameOrIdAPIResponse&gt;</code>](#UsersGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
         * [.updatePreference(usernameOrId, key, value)](#BPMInstance.users.updatePreference) ⇒ [<code>Promise.&lt;UsersUpdatePreferenceAPIResponse&gt;</code>](#UsersUpdatePreferenceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
     * [.processInstance](#BPMInstance.processInstance) : <code>object</code>
+        * [.getById(instanceId)](#BPMInstance.processInstance.getById) ⇒ [<code>Promise.&lt;ProcessInstanceGetByIDAPIResponse&gt;</code>](#ProcessInstanceGetByIDAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
 
 <a name="BPMInstance.groups"></a>
 
@@ -156,6 +160,18 @@ Update a user preference.
 
 ### BPMInstance.processInstance : <code>object</code>
 **Kind**: static namespace of [<code>BPMInstance</code>](#BPMInstance)  
+<a name="BPMInstance.processInstance.getById"></a>
+
+#### processInstance.getById(instanceId) ⇒ [<code>Promise.&lt;ProcessInstanceGetByIDAPIResponse&gt;</code>](#ProcessInstanceGetByIDAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Get a user details.
+
+**Kind**: static method of [<code>processInstance</code>](#BPMInstance.processInstance)  
+**Returns**: [<code>Promise.&lt;ProcessInstanceGetByIDAPIResponse&gt;</code>](#ProcessInstanceGetByIDAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| instanceId | <code>string</code> | Instance ID |
+
 <a name="APIError"></a>
 
 ## APIError
@@ -337,6 +353,19 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | diagram | <code>object</code> | BPD diagram of this instance, including existing tokens and associated task for the instance |
 | documents | [<code>Array.&lt;InstanceDocument&gt;</code>](#InstanceDocument) | List of instance documents |
 | tasks | <code>Array.&lt;TaskDetails&gt;</code> | List of instance tasks |
+
+<a name="ProcessInstanceGetByIDAPIResponse"></a>
+
+## ProcessInstanceGetByIDAPIResponse : <code>object</code>
+Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides the `data` property
+
+**Kind**: global typedef  
+**Extends**: [<code>APIResponse</code>](#APIResponse)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| data | [<code>InstanceDetails</code>](#InstanceDetails) | instance details |
 
 <a name="UserDetails"></a>
 
