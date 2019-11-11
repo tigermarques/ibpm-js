@@ -47,9 +47,7 @@ describe('Groups', () => {
       }, 'testFilter*')).to.eventually.be.fulfilled
         .then(handleSuccess)
         .then((response) => {
-          expect(response.data).to.eql({
-            groups: []
-          })
+          expect(response.data).to.eql([])
         })
     })
 
@@ -61,19 +59,17 @@ describe('Groups', () => {
       }, 'myG*')).to.eventually.be.fulfilled
         .then(handleSuccess)
         .then((response) => {
-          expect(response.data).to.eql({
-            groups: [{
-              groupID: 3,
-              groupName: 'myGroup',
-              displayName: 'myGroup',
-              description: 'Group for people',
-              members: [
-                'myUser',
-                'myOtherUser'
-              ],
-              managerGroupName: null
-            }]
-          })
+          expect(response.data).to.eql([{
+            groupID: 3,
+            groupName: 'myGroup',
+            displayName: 'myGroup',
+            description: 'Group for people',
+            members: [
+              'myUser',
+              'myOtherUser'
+            ],
+            managerGroupName: null
+          }])
         })
     })
   })
