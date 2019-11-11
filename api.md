@@ -31,6 +31,12 @@
 <dt><a href="#GroupsGetByNameOrIdAPIResponse">GroupsGetByNameOrIdAPIResponse</a> : <code>object</code></dt>
 <dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
 </dd>
+<dt><a href="#InstanceDocument">InstanceDocument</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TaskDetails2">TaskDetails2</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#InstanceDetails">InstanceDetails</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#UserDetails">UserDetails</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#UsersGetByFilterAPIResponse">UsersGetByFilterAPIResponse</a> : <code>object</code></dt>
@@ -63,12 +69,11 @@ Class that represents a BPM Instance
         * [.getByFilter(filter)](#BPMInstance.users.getByFilter) ⇒ [<code>Promise.&lt;UsersGetByFilterAPIResponse&gt;</code>](#UsersGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
         * [.getByNameOrId(usernameOrId)](#BPMInstance.users.getByNameOrId) ⇒ [<code>Promise.&lt;UsersGetByNameOrIdAPIResponse&gt;</code>](#UsersGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
         * [.updatePreference(usernameOrId, key, value)](#BPMInstance.users.updatePreference) ⇒ [<code>Promise.&lt;UsersUpdatePreferenceAPIResponse&gt;</code>](#UsersUpdatePreferenceAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.processInstance](#BPMInstance.processInstance) : <code>object</code>
 
 <a name="BPMInstance.groups"></a>
 
 ### BPMInstance.groups : <code>object</code>
-Prop namespace
-
 **Kind**: static namespace of [<code>BPMInstance</code>](#BPMInstance)  
 
 * [.groups](#BPMInstance.groups) : <code>object</code>
@@ -102,8 +107,6 @@ Get a group details.
 <a name="BPMInstance.users"></a>
 
 ### BPMInstance.users : <code>object</code>
-Prop namespace
-
 **Kind**: static namespace of [<code>BPMInstance</code>](#BPMInstance)  
 
 * [.users](#BPMInstance.users) : <code>object</code>
@@ -149,6 +152,10 @@ Update a user preference.
 | key | <code>string</code> | Attribute key |
 | value | <code>string</code> | Attribute value |
 
+<a name="BPMInstance.processInstance"></a>
+
+### BPMInstance.processInstance : <code>object</code>
+**Kind**: static namespace of [<code>BPMInstance</code>](#BPMInstance)  
 <a name="APIError"></a>
 
 ## APIError
@@ -243,6 +250,93 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | Name | Type | Description |
 | --- | --- | --- |
 | data | [<code>GroupDetails</code>](#GroupDetails) | group details |
+
+<a name="InstanceDocument"></a>
+
+## InstanceDocument : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| ID | <code>string</code> | Document internal ID |
+| ecmID | <code>string</code> | Document ECM identifier |
+| type | <code>string</code> | Document type |
+| name | <code>string</code> | Document name |
+| date | <code>date</code> | Document creation date |
+| length | <code>number</code> | Document size |
+| url | <code>string</code> | Document URL |
+| version | <code>number</code> | Document version |
+
+<a name="TaskDetails2"></a>
+
+## TaskDetails2 : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| activationTime | <code>date</code> | Date the task instance is set into the ready state |
+| atRiskTime | <code>date</code> | Date the task instance is at risk |
+| completionTime | <code>date</code> | Date when the task instance reached an end state |
+| dueTime | <code>date</code> | Date when the task is due |
+| lastModificationTime | <code>date</code> | The latest date at which the task was created, started or completed |
+| assignedToID | <code>number</code> | Task owner ID |
+| assignedTo | <code>string</code> | Task owner |
+| assignedToDisplayName | <code>string</code> | Task owner display name |
+| assignedToType | <code>string</code> | Identifies if the task is assigned to a user or group |
+| teamID | <code>number</code> | The ID of the assigned team. When `assignedToType` is `group`, it is the same as `assignedToID` |
+| teamName | <code>string</code> | The name of the assigned team. When `assignedToType` is `group`, it is the same as `assignedTo` |
+| teamDisplayName | <code>string</code> | The display name of the assigned team. When `assignedToType` is `group`, it is the same as `assignedToDisplayName` |
+| managerTeamID | <code>number</code> | The ID of the manager team |
+| managerTeamName | <code>string</code> | The name of the manager team |
+| managerTeamDisplayName | <code>string</code> | The display name of the manager team |
+| data | <code>object</code> | Task instance data |
+| description | <code>string</code> | Task description |
+| displayName | <code>string</code> | Task display name |
+| externalActivityID | <code>string</code> | ID of the external activity |
+| kind | <code>string</code> | Task kind |
+| name | <code>string</code> | Task name |
+| originator | <code>string</code> | ID of the user that created the task instance or on whose behalf the task instance was created |
+| owner | <code>string</code> | Task owner |
+| priority | <code>number</code> | Task priority level |
+| priorityName | <code>string</code> | Task priority description |
+| kind | <code>string</code> | Task kind |
+
+<a name="InstanceDetails"></a>
+
+## InstanceDetails : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| piid | <code>string</code> | Instance internal ID |
+| name | <code>string</code> | Instance name |
+| description | <code>string</code> | Instance description |
+| starterId | <code>string</code> | User ID that created this instance |
+| creationTime | <code>date</code> | Instance creation date |
+| lastModificationTime | <code>date</code> | Instance last modification date |
+| dueDate | <code>date</code> | Instance due date |
+| executionState | <code>string</code> | Instance execution state description |
+| state | <code>string</code> | Instance execution state code |
+| processAppID | <code>string</code> | Process Application ID that this instance belongs to |
+| processAppAcronym | <code>string</code> | Process Application Acronym that this instance belongs to |
+| processAppName | <code>string</code> | Process Application Name that this instance belongs to |
+| snapshotID | <code>string</code> | Snapshot ID that this instance belongs to |
+| snapshotTip | <code>boolean</code> | `true` if the instance snapshot is the tip snapshot and `false` otherwise |
+| branchID | <code>string</code> | Branch ID that this instance belongs to |
+| branchName | <code>string</code> | Branch Name that this instance belongs to |
+| processTemplateID | <code>string</code> | Process Template ID that originated this instance |
+| processTemplateName | <code>string</code> | Process Template Name that originated this instance |
+| data | <code>string</code> | Instance data in a string representation |
+| businessData | <code>Array.&lt;Object&gt;</code> | Business data defined for the instance, including name, alias, type and value |
+| variables | <code>object</code> | Variable values in a json object |
+| actions | <code>Array.&lt;string&gt;</code> | List of available actions for the process instance |
+| executionTree | <code>object</code> | Execution tree associated with the process |
+| diagram | <code>object</code> | BPD diagram of this instance, including existing tokens and associated task for the instance |
+| documents | [<code>Array.&lt;InstanceDocument&gt;</code>](#InstanceDocument) | List of instance documents |
+| tasks | <code>Array.&lt;TaskDetails&gt;</code> | List of instance tasks |
 
 <a name="UserDetails"></a>
 
