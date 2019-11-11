@@ -67,7 +67,6 @@ describe('Groups', () => {
               groupName: 'myGroup',
               displayName: 'myGroup',
               description: 'Group for people',
-              deleted: false,
               members: [
                 'myUser',
                 'myOtherUser'
