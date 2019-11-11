@@ -47,9 +47,7 @@ describe('Users', () => {
       }, 'testFilter*')).to.eventually.be.fulfilled
         .then(handleSuccess)
         .then((response) => {
-          expect(response.data).to.eql({
-            users: []
-          })
+          expect(response.data).to.eql([])
         })
     })
 
@@ -61,21 +59,17 @@ describe('Users', () => {
       }, 'myU*')).to.eventually.be.fulfilled
         .then(handleSuccess)
         .then((response) => {
-          expect(response.data).to.eql({
-            users: [{
-              userID: 12,
-              userName: 'myUser',
-              fullName: 'My User',
-              isDisabled: false,
-              primaryGroup: null,
-              emailAddress: null,
-              userPreferences: {},
-              memberships: [
-                'tw_authors',
-                'tw_allusers'
-              ]
-            }]
-          })
+          expect(response.data).to.eql([{
+            userID: 12,
+            userName: 'myUser',
+            fullName: 'My User',
+            emailAddress: null,
+            userPreferences: {},
+            memberships: [
+              'tw_authors',
+              'tw_allusers'
+            ]
+          }])
         })
     })
   })

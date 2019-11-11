@@ -104,7 +104,75 @@ describe('Process Instance', () => {
         .then(handleSuccess)
         .then((response) => {
           expect(response.data).to.be.an('object')
-          expect(response.data.piid).to.equal('23972')
+          expect(response.data).to.eql({
+            piid: '23972',
+            name: 'My Instance Name',
+            description: '',
+            starterId: '9',
+            creationTime: new Date('2019-03-29T16:03:25Z'),
+            lastModificationTime: new Date('2019-03-30T19:54:51Z'),
+            dueDate: new Date('2019-04-23T07:00:00Z'),
+            executionState: 'Active',
+            state: 'STATE_RUNNING',
+            processAppID: '2066.5612af53-33ac-42e6-ab5d-0b65a0b2f03b',
+            processAppName: 'My Process Application',
+            processAppAcronym: 'MYPA',
+            snapshotID: '2064.64c13d68-c128-413b-92c1-ad3f5a7b0273',
+            snapshotName: null,
+            snapshotTip: true,
+            branchID: '2063.e56ca3ef-6ee8-4a3f-abb4-cab310234363',
+            branchName: 'Main',
+            processTemplateID: '25.912f1c9b-8eaa-44fc-ae35-4914349f4df6',
+            processTemplateName: 'My Process',
+            data: '',
+            businessData: [],
+            variables: {},
+            actions: null,
+            executionTree: {},
+            diagram: {},
+            documents: [],
+            tasks: [{
+              tkiid: '189489',
+              activationTime: new Date('2019-11-06T15:31:52Z'),
+              atRiskTime: new Date('2019-11-07T06:55:36Z'),
+              completionTime: null,
+              dueTime: new Date('2019-11-07T07:31:52Z'),
+              lastModificationTime: new Date('2019-11-06T15:31:52Z'),
+              startTime: new Date('2019-11-06T15:31:52Z'),
+              assignedToID: 9,
+              assignedTo: 'deadmin',
+              assignedToDisplayName: 'deadmin',
+              assignedToType: 'user',
+              teamID: null,
+              teamName: null,
+              teamDisplayName: null,
+              managerTeamID: null,
+              managerTeamName: null,
+              managerTeamDisplayName: null,
+              data: {
+                variables: {
+                  param1: null,
+                  param2: '207242667'
+                }
+              },
+              description: '',
+              displayName: 'Task title',
+              externalActivitySnapshotID: null,
+              kind: 'KIND_PARTICIPATING',
+              name: 'My Task',
+              originator: 'deadmin',
+              owner: 'deadmin',
+              priority: 20,
+              priorityName: 'High',
+              state: 'STATE_SUSPENDED_BY_PARENT',
+              status: 'Received',
+              serviceID: '1.ccb34ca7-de42-4fa0-8637-42e9fca39914',
+              serviceSnapshotID: '2064.59c03887-ed63-4727-a69e-3f8f83eb94c4',
+              flowObjectID: 'bpdid:fad665351fce3d21:5b553ab2:1582eaae0d5:3299',
+              nextTaskId: null,
+              actions: null
+            }]
+          })
         })
     })
   })
