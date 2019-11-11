@@ -29,10 +29,19 @@ To get started using the library you can use the available public methods:
 ```javascript
 const ibpm = require('ibpm-js')
 
+const bpmInstance = ibpm.createInstance({
+  protocol: 'https',
+  hostname: '',
+  port: '9443',
+  context: '',
+  username: 'bpmadmin',
+  password: 'bpmadmin'
+})
+
 ...
 
 // retrieve details for a specific process instance
-const details = await ibpm.processInstance.getById(1234)
+const details = await bpmInstance.processInstance.getById(1234)
 console.log(details)
 /* Output:
 {
@@ -54,7 +63,7 @@ console.log(details)
 */
 
 // send a message to trigger an UCA
-const result = await ibpm.processInstance.sendMessage({
+const result = await bpmInstance.processInstance.sendMessage({
   processApp: 'MYAPP',
   ucaName: 'UCA1'
 }, [{
@@ -73,7 +82,7 @@ console.log(result)
 */
 
 // get user details
-const userDetails = await ibpm.users.getByNameOrId('bpmadmin')
+const userDetails = await bpmInstance.users.getByNameOrId('bpmadmin')
 console.log(userDetails)
 /* Output:
 {
@@ -124,7 +133,7 @@ To check for code style, run
 ```
 npm run lint
 ```
-<!--
+
 ### Generating Documentation
 
 Documentation for the project is done with `jsdoc`. If you update any code that requires documentation update, please do so and update the `api.md` file using the command
@@ -132,7 +141,7 @@ Documentation for the project is done with `jsdoc`. If you update any code that 
 ```
 npm run docs
 ```
--->
+
 ### Versioning
 
 This project follows the [Semantic Versioning 2.0.0](https://semver.org/) guide. Version numbering is handled by the package `semantic-release`. Therefore, never update the `version` field in the `package.json` file.

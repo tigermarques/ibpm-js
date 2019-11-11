@@ -6,6 +6,7 @@
   "scripts": {
     "test": "nyc mocha --opts ./mocha.opts \"test/**/*.test.js\"",
     "lint": "eslint .",
+    "docs": "jsdoc2md lib/**/*.js > api.md",
     "report-coverage": "codecov",
     "semantic-release": "semantic-release",
     "commit": "git-cz"
@@ -46,6 +47,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "husky": "^2.7.0",
+    "jsdoc-to-markdown": "^5.0.2",
     "mocha": "^6.2.2",
     "nock": "^11.7.0",
     "nyc": "^14.1.1",
