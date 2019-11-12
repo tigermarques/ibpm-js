@@ -170,7 +170,7 @@ describe('Application', () => {
       })
     })
 
-    it.skip('should call the addGroup with the correct configurations', () => {
+    it('should call the addGroup with the correct configurations', () => {
       const myApp = new App({
         protocol: 'https',
         hostname: 'domain',

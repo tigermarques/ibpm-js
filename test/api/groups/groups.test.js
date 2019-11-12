@@ -336,4 +336,122 @@ describe('Groups', () => {
         })
     })
   })
+
+  describe('addGroup', () => {
+    beforeEach(() => {
+      nock('https://myDomain:9443')
+        .put(/^\/rest\/bpm\/wle\/v1\/group/)
+        .query(queryObj => queryObj.action === 'addMember' && 'group' in queryObj && !('user' in queryObj))
+        .reply(function (url, body) {
+          const auth = basicAuth.parse(this.req.headers.authorization)
+          if (auth && auth.name === 'myUser' && auth.pass === 'myPassword') {
+            const groupName = this.req.path.split('?')[0].split('/').slice(-1)[0]
+            const subGroupName = queryString.parse(this.req.path.split('?')[1]).group
+            if (groupName === 'myGroup') {
+              if (subGroupName === 'mySubGroup') {
+                return [200, require('./responses/addGroup/success.json')]
+              } else if (subGroupName === '123456789123456789') {
+                return [500, require('./responses/addGroup/exception.json')]
+              } else {
+                const response = JSON.parse(JSON.stringify(require('./responses/addGroup/groupNotFound.json'))) // clone the object
+                response.Data.errorMessage = response.Data.errorMessage.replace('@groupName', subGroupName)
+                response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@groupName', subGroupName)
+                return [404, response]
+              }
+            } else if (groupName === '123456789123456789') {
+              return [500, require('./responses/addGroup/exception.json')]
+            } else {
+              const response = JSON.parse(JSON.stringify(require('./responses/addGroup/groupNotFound.json'))) // clone the object
+              response.Data.errorMessage = response.Data.errorMessage.replace('@groupName', groupName)
+              response.Data.errorMessageParameters[0] = response.Data.errorMessageParameters[0].replace('@groupName', groupName)
+              return [404, response]
+            }
+          } else {
+            return [401]
+          }
+        })
+    })
+
+    it('should return an Unauthorized error when wrong credentials are provided', () => {
+      return expect(groups.addGroup({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myWrongUser',
+        password: 'myWrongPassword'
+      }, 'myGroup', 'mySubGroup')).to.eventually.be.rejected
+        .then(handleUnauthorized)
+    })
+
+    it('should return a not found error when the group does not exist', () => {
+      return expect(groups.addGroup({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'myOtherGroup', 'mySubGroup')).to.eventually.be.rejected
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0006E',
+            errorMessage: 'CWTBG0006E: Group \'myOtherGroup\' not found.'
+          })
+        })
+    })
+
+    it('should return a server error when the group name cannot be parsed', () => {
+      return expect(groups.addGroup({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, '123456789123456789', 'mySubGroup')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
+        })
+    })
+
+    it('should return a not found error when the sub group does not exist', () => {
+      return expect(groups.addGroup({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'myGroup', 'myOtherSubGroup')).to.eventually.be.rejected
+        .then(handleNotFound)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0006E',
+            errorMessage: 'CWTBG0006E: Group \'myOtherSubGroup\' not found.'
+          })
+        })
+    })
+
+    it('should return a server error when the sub group name cannot be parsed', () => {
+      return expect(groups.addGroup({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'myGroup', '123456789123456789')).to.eventually.be.rejected
+        .then(handleUnknown)
+        .then(response => {
+          expect(response.data).to.eql({
+            errorNumber: 'CWTBG0019E',
+            errorMessage: 'CWTBG0019E: Unexpected exception during execution. Exception information: \'Unexpected database exception\'.'
+          })
+        })
+    })
+
+    it('should return group details when the correct input is provided', () => {
+      return groups.addGroup({
+        restUrl: 'https://myDomain:9443/rest/bpm/wle/v1',
+        username: 'myUser',
+        password: 'myPassword'
+      }, 'myGroup', 'mySubGroup')
+        .then(handleSuccess)
+        .then((response) => {
+          expect(response.data).to.be.an('object')
+          expect(response.data.groupName).to.equal('myGroup')
+        })
+    })
+  })
 })
