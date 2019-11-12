@@ -82,8 +82,8 @@ describe('Application', () => {
       expect(myApp.groups).to.respondTo('getByNameOrId')
       expect(myApp.groups).to.respondTo('addUser')
       expect(myApp.groups).to.respondTo('removeUser')
-      // expect(myApp.groups).to.respondTo('addGroup')
-      // expect(myApp.groups).to.respondTo('removeGroup')
+      expect(myApp.groups).to.respondTo('addGroup')
+      expect(myApp.groups).to.respondTo('removeGroup')
     })
 
     it('should call the getByFilter with the correct configurations', () => {
@@ -191,7 +191,7 @@ describe('Application', () => {
       })
     })
 
-    it.skip('should call the removeGroup with the correct configurations', () => {
+    it('should call the removeGroup with the correct configurations', () => {
       const myApp = new App({
         protocol: 'https',
         hostname: 'domain',
