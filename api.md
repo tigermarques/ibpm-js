@@ -28,7 +28,7 @@
 <dt><a href="#GroupsGetByFilterAPIResponse">GroupsGetByFilterAPIResponse</a> : <code>object</code></dt>
 <dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
 </dd>
-<dt><a href="#GroupsGetByNameOrIdAPIResponse">GroupsGetByNameOrIdAPIResponse</a> : <code>object</code></dt>
+<dt><a href="#GroupsAPIResponse">GroupsAPIResponse</a> : <code>object</code></dt>
 <dd><p>Inherits <code>status</code> and <code>message</code> from <a href="#APIResponse">APIResponse</a> and overrides the <code>data</code> property</p>
 </dd>
 <dt><a href="#InstanceDocument">InstanceDocument</a> : <code>object</code></dt>
@@ -82,7 +82,11 @@ Class that represents a BPM Instance
 * [BPMInstance](#BPMInstance)
     * [.groups](#BPMInstance.groups) : <code>object</code>
         * [.getByFilter(filter)](#BPMInstance.groups.getByFilter) ⇒ [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
-        * [.getByNameOrId(nameOrId)](#BPMInstance.groups.getByNameOrId) ⇒ [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.getByNameOrId(nameOrId)](#BPMInstance.groups.getByNameOrId) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.addUser(groupNameOrId, userNameOrId)](#BPMInstance.groups.addUser) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.removeUser(groupNameOrId, userNameOrId)](#BPMInstance.groups.removeUser) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.addGroup(groupNameOrId, subGroupNameOrId)](#BPMInstance.groups.addGroup) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+        * [.removeGroup(groupNameOrId, subGroupNameOrId)](#BPMInstance.groups.removeGroup) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
     * [.users](#BPMInstance.users) : <code>object</code>
         * [.getByFilter(filter)](#BPMInstance.users.getByFilter) ⇒ [<code>Promise.&lt;UsersGetByFilterAPIResponse&gt;</code>](#UsersGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
         * [.getByNameOrId(usernameOrId)](#BPMInstance.users.getByNameOrId) ⇒ [<code>Promise.&lt;UsersGetByNameOrIdAPIResponse&gt;</code>](#UsersGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
@@ -107,7 +111,11 @@ Class that represents a BPM Instance
 
 * [.groups](#BPMInstance.groups) : <code>object</code>
     * [.getByFilter(filter)](#BPMInstance.groups.getByFilter) ⇒ [<code>Promise.&lt;GroupsGetByFilterAPIResponse&gt;</code>](#GroupsGetByFilterAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
-    * [.getByNameOrId(nameOrId)](#BPMInstance.groups.getByNameOrId) ⇒ [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.getByNameOrId(nameOrId)](#BPMInstance.groups.getByNameOrId) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.addUser(groupNameOrId, userNameOrId)](#BPMInstance.groups.addUser) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.removeUser(groupNameOrId, userNameOrId)](#BPMInstance.groups.removeUser) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.addGroup(groupNameOrId, subGroupNameOrId)](#BPMInstance.groups.addGroup) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+    * [.removeGroup(groupNameOrId, subGroupNameOrId)](#BPMInstance.groups.removeGroup) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
 
 <a name="BPMInstance.groups.getByFilter"></a>
 
@@ -123,15 +131,67 @@ Get a list of groups by providing a search filter.
 
 <a name="BPMInstance.groups.getByNameOrId"></a>
 
-#### groups.getByNameOrId(nameOrId) ⇒ [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+#### groups.getByNameOrId(nameOrId) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
 Get a group details.
 
 **Kind**: static method of [<code>groups</code>](#BPMInstance.groups)  
-**Returns**: [<code>Promise.&lt;GroupsGetByNameOrIdAPIResponse&gt;</code>](#GroupsGetByNameOrIdAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+**Returns**: [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | nameOrId | <code>string</code> | Group name or ID |
+
+<a name="BPMInstance.groups.addUser"></a>
+
+#### groups.addUser(groupNameOrId, userNameOrId) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Add a user to a group.
+
+**Kind**: static method of [<code>groups</code>](#BPMInstance.groups)  
+**Returns**: [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| groupNameOrId | <code>string</code> | Group name or ID |
+| userNameOrId | <code>string</code> | User name or ID |
+
+<a name="BPMInstance.groups.removeUser"></a>
+
+#### groups.removeUser(groupNameOrId, userNameOrId) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Remove a user from a group.
+
+**Kind**: static method of [<code>groups</code>](#BPMInstance.groups)  
+**Returns**: [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| groupNameOrId | <code>string</code> | Group name or ID |
+| userNameOrId | <code>string</code> | User name or ID |
+
+<a name="BPMInstance.groups.addGroup"></a>
+
+#### groups.addGroup(groupNameOrId, subGroupNameOrId) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Add a group to another group.
+
+**Kind**: static method of [<code>groups</code>](#BPMInstance.groups)  
+**Returns**: [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| groupNameOrId | <code>string</code> | Group name or ID |
+| subGroupNameOrId | <code>string</code> | Sub Group name or ID |
+
+<a name="BPMInstance.groups.removeGroup"></a>
+
+#### groups.removeGroup(groupNameOrId, subGroupNameOrId) ⇒ [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError)
+Remove a group from another group.
+
+**Kind**: static method of [<code>groups</code>](#BPMInstance.groups)  
+**Returns**: [<code>Promise.&lt;GroupsAPIResponse&gt;</code>](#GroupsAPIResponse) \| [<code>Promise.&lt;APIError&gt;</code>](#APIError) - a `Promise` that will be resolved if the request is successful, or rejected if any error occurs.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| groupNameOrId | <code>string</code> | Group name or ID |
+| subGroupNameOrId | <code>string</code> | Sub Group name or ID |
 
 <a name="BPMInstance.users"></a>
 
@@ -414,9 +474,9 @@ Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides t
 | --- | --- | --- |
 | data | [<code>Array.&lt;GroupDetails&gt;</code>](#GroupDetails) | list of groups |
 
-<a name="GroupsGetByNameOrIdAPIResponse"></a>
+<a name="GroupsAPIResponse"></a>
 
-## GroupsGetByNameOrIdAPIResponse : <code>object</code>
+## GroupsAPIResponse : <code>object</code>
 Inherits `status` and `message` from [APIResponse](#APIResponse) and overrides the `data` property
 
 **Kind**: global typedef  

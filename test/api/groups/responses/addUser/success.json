@@ -1,0 +1,15 @@
+{
+  "status": "200",
+  "data": {
+    "groupID": 3,
+    "groupName": "myGroup",
+    "displayName": "myGroup",
+    "description": "Group for people with full access to Teamworks.",
+    "deleted": false,
+    "members": [
+      "bpmadmin",
+      "deadmin"
+    ],
+    "managerGroupName": null
+  }
+}
