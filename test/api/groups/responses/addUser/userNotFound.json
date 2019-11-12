@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.NoSuchUserException",
+    "errorNumber": "CWTBG0007E",
+    "errorMessage": "CWTBG0007E: User '@userName' not found.",
+    "errorMessageParameters": [
+      "@userName"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

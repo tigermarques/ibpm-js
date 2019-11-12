@@ -80,6 +80,10 @@ describe('Application', () => {
       expect(myApp.groups).to.be.an('object')
       expect(myApp.groups).to.respondTo('getByFilter')
       expect(myApp.groups).to.respondTo('getByNameOrId')
+      expect(myApp.groups).to.respondTo('addUser')
+      // expect(myApp.groups).to.respondTo('removeUser')
+      // expect(myApp.groups).to.respondTo('addGroup')
+      // expect(myApp.groups).to.respondTo('removeGroup')
     })
 
     it('should call the getByFilter with the correct configurations', () => {
@@ -121,6 +125,90 @@ describe('Application', () => {
           username: 'user',
           password: 'pass'
         }, 'myGroup')
+      })
+    })
+
+    it('should call the addUser with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(groups, 'addUser').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.groups.addUser('myGroup', 'myUser').then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, 'myGroup', 'myUser')
+      })
+    })
+
+    it.skip('should call the removeUser with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(groups, 'removeUser').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.groups.removeUser('myGroup', 'myUser').then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, 'myGroup', 'myUser')
+      })
+    })
+
+    it.skip('should call the addGroup with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(groups, 'addGroup').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.groups.addGroup('myGroup', 'mySubGroup').then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, 'myGroup', 'mySubGroup')
+      })
+    })
+
+    it.skip('should call the removeGroup with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(groups, 'removeGroup').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.groups.removeGroup('myGroup', 'mySubGroup').then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, 'myGroup', 'mySubGroup')
       })
     })
   })
