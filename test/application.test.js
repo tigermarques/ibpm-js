@@ -5,6 +5,7 @@ const App = require('../lib/application')
 const groups = require('./../lib/api/groups')
 const users = require('./../lib/api/users')
 const processInstance = require('./../lib/api/processInstance')
+const system = require('./../lib/api/system')
 
 chai.use(sinonChai)
 const expect = chai.expect
@@ -576,6 +577,35 @@ describe('Application', () => {
           processApp: 'APP1',
           eventName: 'event1'
         }, [])
+      })
+    })
+  })
+
+  describe('System namespace', () => {
+    it('should have namespace and methods available', () => {
+      const myApp = new App({})
+      expect(myApp.system).to.be.an('object')
+      expect(myApp.system).to.respondTo('getDetails')
+    })
+
+    it('should call the getDetails with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(system, 'getDetails').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.system.getDetails().then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        })
       })
     })
   })

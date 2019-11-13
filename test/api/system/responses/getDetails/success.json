@@ -1,0 +1,30 @@
+{
+  "status": "200",
+  "data": {
+    "systems": [
+      {
+        "systemID": "81653271-2986-4821-a352-dfede989c415",
+        "systemType": "SYSTEM_TYPE_WLE",
+        "version": "8.6.0.201803",
+        "buildLevel": "BPM8600-20180316-105427",
+        "groupWorkItemsEnabled": false,
+        "substitutionEnabled": false,
+        "substitutionManagementRestrictedToAdministrators": false,
+        "taskHistoryEnabled": false,
+        "workBasketsEnabled": false,
+        "businessCategoriesEnabled": false,
+        "taskSearchEnabled": true,
+        "notificationWebMessagingEnabled": false,
+        "taskListWebMessagingEnabled": true,
+        "apiVersion": "1.0",
+        "supports": null,
+        "resources": [
+          "tasks",
+          "taskTemplates",
+          "processes"
+        ],
+        "hostname": "myHostname.domain.com"
+      }
+    ]
+  }
+}
