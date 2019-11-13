@@ -4,6 +4,7 @@ const sinonChai = require('sinon-chai')
 const App = require('../lib/application')
 const groups = require('./../lib/api/groups')
 const users = require('./../lib/api/users')
+const processNamespace = require('./../lib/api/process')
 const processInstance = require('./../lib/api/processInstance')
 const system = require('./../lib/api/system')
 
@@ -283,6 +284,35 @@ describe('Application', () => {
           username: 'user',
           password: 'pass'
         }, 'myUser', 'email', 'newValue@domain.com')
+      })
+    })
+  })
+
+  describe('Process namespace', () => {
+    it('should have namespace and methods available', () => {
+      const myApp = new App({})
+      expect(myApp.process).to.be.an('object')
+      expect(myApp.process).to.respondTo('start')
+    })
+
+    it('should call the start with the correct configurations', () => {
+      const myApp = new App({
+        protocol: 'https',
+        hostname: 'domain',
+        port: '9445',
+        context: 'dev',
+        username: 'user',
+        password: 'pass'
+      })
+
+      const stub = sinon.stub(processNamespace, 'start').resolves()
+      expect(stub).not.to.have.been.called
+      return myApp.process.start('myBpdId', { snapshotId: 'mySnapshotId' }, [{ myVariable: 'myValue' }]).then(result => {
+        expect(stub).to.have.been.calledWith({
+          restUrl: 'https://domain:9445/dev/rest/bpm/wle/v1',
+          username: 'user',
+          password: 'pass'
+        }, 'myBpdId', { snapshotId: 'mySnapshotId' }, [{ myVariable: 'myValue' }])
       })
     })
   })

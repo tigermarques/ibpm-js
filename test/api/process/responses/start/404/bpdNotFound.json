@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.ProcessDoesNotExistException",
+    "errorNumber": "CWTBG0047E",
+    "errorMessage": "CWTBG0047E: Process '@bpdId' does not exist; it might have been deleted in the meantime.",
+    "errorMessageParameters": [
+      "@bpdId"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.ProjectDoesNotExistException",
+    "errorNumber": "CWTBG0050E",
+    "errorMessage": "CWTBG0050E: Project '@appId' does not exist.",
+    "errorMessageParameters": [
+      "@appId"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

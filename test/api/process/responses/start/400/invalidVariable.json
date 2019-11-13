@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+      "status": "error",
+      "exceptionType": "com.ibm.bpm.wle.api.VariableDoesNotExistException",
+      "errorNumber": "CWTBG0543E",
+      "errorMessage": "CWTBG0543E: The variable 'myInvalidVariable' does not exist.",
+      "errorMessageParameters": [
+          "myInvalidVariable"
+      ],
+      "responses": null,
+      "errorData": null
+  }
+}

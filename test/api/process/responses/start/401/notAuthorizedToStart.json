@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.NotAuthorizedActionException",
+    "errorNumber": "CWTBG0549E",
+    "errorMessage": "CWTBG0549E: You are not authorized to perform the 'start' action.",
+    "errorMessageParameters": [
+      "start"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.UnsupportedParameterValueException",
+    "errorNumber": "CWTBG0029E",
+    "errorMessage": "CWTBG0029E: The parameter 'params' has an unsupported value 'myInvalidValue'. Supported values are: 'Integer'",
+    "errorMessageParameters": [
+      "params",
+      "teste",
+      "Integer"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}
