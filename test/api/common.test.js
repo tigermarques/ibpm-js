@@ -155,4 +155,25 @@ describe('Common', () => {
         })
       })
   })
+
+  it('should rethrow errors with the correct modifications in genericErrorHandler', () => {
+    const error1 = new APIError('message', 'status', null)
+    const error2 = new APIError('message', 'status', {
+      key: 'value'
+    })
+    const error3 = new APIError('message', 'status', {
+      Data: {
+        errorNumber: 'value1',
+        errorMessage: 'value2'
+      }
+    })
+    expect(() => common.genericErrorHandler(error1)).to.throw(APIError).with.property('data', null)
+    expect(() => common.genericErrorHandler(error2)).to.throw(APIError).with.deep.property('data', {
+      key: 'value'
+    })
+    expect(() => common.genericErrorHandler(error3)).to.throw(APIError).with.deep.property('data', {
+      errorNumber: 'value1',
+      errorMessage: 'value2'
+    })
+  })
 })
