@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.QueryParameterNotSpecifiedOrEmptyException",
+    "errorNumber": "CWTBG0023E",
+    "errorMessage": "CWTBG0023E: The 'bpdId' query parameter was required but was not specified or has no value.",
+    "errorMessageParameters": [
+      "bpdId"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

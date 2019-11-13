@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.InvalidID2Exception",
+    "errorNumber": "CWTBG0554E",
+    "errorMessage": "CWTBG0554E: The ID 'myInvalidBpdId' is not valid. This ID is a number, and a dot-qualified ID was expected.",
+    "errorMessageParameters": [
+      "myInvalidBpdId"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

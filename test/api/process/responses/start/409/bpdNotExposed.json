@@ -1,0 +1,12 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.CannotStartBPDNotExposedException",
+    "errorNumber": "CWTBG0587E",
+    "errorMessage": "CWTBG0587E: Cannot start BPD because the BPD is not exposed.",
+    "errorMessageParameters": null,
+    "responses": null,
+    "errorData": null
+  }
+}

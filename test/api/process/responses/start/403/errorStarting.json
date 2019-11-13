@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.StartActionError2Exception",
+    "errorNumber": "CWTBG0570E",
+    "errorMessage": "CWTBG0570E: A 'start' action could not be performed due to [myMessage].",
+    "errorMessageParameters": [
+      "[myMessage]"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.InvalidParameterException",
+    "errorNumber": "CWTBG0012E",
+    "errorMessage": "CWTBG0012E: The parameter 'branchId' is invalid.",
+    "errorMessageParameters": [
+      "branchId"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}

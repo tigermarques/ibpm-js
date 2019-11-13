@@ -1,0 +1,12 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.CannotStartBPDWrongStateException",
+    "errorNumber": "CWTBG0586E",
+    "errorMessage": "CWTBG0586E: Cannot start BPD because the snapshot or BPD is in the wrong state.",
+    "errorMessageParameters": null,
+    "responses": null,
+    "errorData": null
+  }
+}

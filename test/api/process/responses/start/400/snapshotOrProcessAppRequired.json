@@ -1,0 +1,15 @@
+{
+  "status": "error",
+  "Data": {
+    "status": "error",
+    "exceptionType": "com.ibm.bpm.wle.api.QueryParametersNotSpecifiedException",
+    "errorNumber": "CWTBG0022E",
+    "errorMessage": "CWTBG0022E: The 'snapshotId' or 'processAppId' query parameter was required but was not specified.",
+    "errorMessageParameters": [
+      "snapshotId",
+      "processAppId"
+    ],
+    "responses": null,
+    "errorData": null
+  }
+}
